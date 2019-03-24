@@ -1,14 +1,27 @@
 # !/usr/bin/python
-import sys
+import sys, time
 from MFRC522 import MFRC522
 import signal
 from NANOPISPI import NANOPISPI
 from array import array
+from APA102 import APA102
+import threading
 
-nanopi = NANOPISPI.NANOPISPI(1)
-nanopi.cs_init([6])
-nanopi.cs_set(0, 0)
+nanopi = NANOPISPI.NANOPISPI()
+nanopi.cs_init([6, 7])
+nanopi.cs_set(0, 1)
 nanopi.open(0,0,1000000)
+
+led = APA102.APA102(4)
+
+led.prepare_data(0, 0, 15, 5, 0)
+led.prepare_data(0, 100, 30, 5, 1)
+led.prepare_data(100, 0, 50, 5, 2)
+led.prepare_data(0, 45, 21, 5, 3)
+led_blue = led.get_data()
+nanopi.cs_set(0, 1)
+nanopi.write(led_blue)
+nanopi.cs_set(0, 0)
 
 continue_reading = True
 
@@ -23,8 +36,10 @@ def end_read(signal, frame):
 # Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)
 
+nanopi.cs_set(1, 1)
 # Create an object of the class MFRC522
 MIFAREReader = MFRC522.MFRC522(0,0, nanopi)
+
 
 # Welcome message
 print("Welcome to the MFRC522 data read example")

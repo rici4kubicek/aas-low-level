@@ -517,7 +517,7 @@ class MFRC522:
 
     def init(self):
 
-        io.digitalWrite(0, io.HIGH)
+        # io.digitalWrite(0, io.HIGH)
         self.reset();
 
         # data = ''.join([chr(0x82), chr(0)])

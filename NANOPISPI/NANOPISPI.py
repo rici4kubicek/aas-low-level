@@ -6,7 +6,7 @@ import threading
 
 class NANOPISPI:
 
-    def __init__(self,test):
+    def __init__(self):
         io.setup()
         self.mutex = threading.Lock()
 
