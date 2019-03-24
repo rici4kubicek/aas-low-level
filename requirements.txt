@@ -1,2 +1,3 @@
 nightWiring
 spidev
+paho-mqtt
