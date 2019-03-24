@@ -138,30 +138,34 @@ class MFRC522:
 
     serNum = []
 
-    def __init__(self, spi_bus, spi_device):
-        io.setup()
-        io.setupGPIO(ledMap, 1)
-        io.pinMode(0, io.OUTPUT)
-        io.digitalWrite(0, io.HIGH)
-        io.digitalWrite(0, io.LOW)
-        time.sleep(0.1)
-        io.digitalWrite(0, io.HIGH)
-        time.sleep(0.1)
-        self.spi = spidev.SpiDev()
-        self.spi.open(spi_bus, spi_device)
-        self.spi.max_speed_hz = 1000000
+    def __init__(self, spi_bus, spi_device, nanopi_instance):
+        # io.setup()
+        # io.setupGPIO(ledMap, 1)
+        # io.pinMode(0, io.OUTPUT)
+        # io.digitalWrite(0, io.HIGH)
+        # io.digitalWrite(0, io.LOW)
+        # time.sleep(0.1)
+        # io.digitalWrite(0, io.HIGH)
+        # time.sleep(0.1)
+        # self.spi = spidev.SpiDev()
+        # self.spi.open(spi_bus, spi_device)
+        # self.spi.max_speed_hz = 1000000
+        self.nanopi = nanopi_instance
         self.init()
 
     def reset(self):
         self.write_spi(self.CommandReg, self.PCD_RESETPHASE)
-        time.sleep(0.2)
+        # time.sleep(0.2)
 
     def write_spi(self, addr, val):
-        self.spi.xfer([(addr << 1) & 0x7E, val])
+        # self.spi.xfer([(addr << 1) & 0x7E, val])
+        self.nanopi.write([(addr << 1) & 0x7E, val])
 
     def read_spi(self, addr):
-        val = self.spi.xfer([((addr << 1) & 0x7E) | 0x80, 0])
-        return val[1]
+        # val = self.spi.xfer([((addr << 1) & 0x7E) | 0x80, 0])
+        # return val[1]
+        val = self.nanopi.read_byte([((addr << 1) & 0x7E) | 0x80, 0])
+        return val
 
     def set_bit_mask(self, reg, mask):
         tmp = self.read_spi(reg)

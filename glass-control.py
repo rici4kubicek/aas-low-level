@@ -1,6 +1,14 @@
+# !/usr/bin/python
 import sys
 from MFRC522 import MFRC522
 import signal
+from NANOPISPI import NANOPISPI
+from array import array
+
+nanopi = NANOPISPI.NANOPISPI(1)
+nanopi.cs_init([6])
+nanopi.cs_set(0, 0)
+nanopi.open(0,0,1000000)
 
 continue_reading = True
 
@@ -16,7 +24,7 @@ def end_read(signal, frame):
 signal.signal(signal.SIGINT, end_read)
 
 # Create an object of the class MFRC522
-MIFAREReader = MFRC522.MFRC522(0,0)
+MIFAREReader = MFRC522.MFRC522(0,0, nanopi)
 
 # Welcome message
 print("Welcome to the MFRC522 data read example")
