@@ -32,27 +32,21 @@ continue_reading = True
 timer = timer.Timer()
 
 
-# Capture SIGINT for cleanup when the script is aborted
 def end_read(signal, frame):
     global continue_reading
     print("Ctrl+C captured, ending read.")
     continue_reading = False
 
 
-# Hook the SIGINT
 signal.signal(signal.SIGINT, end_read)
 
 nanopi.cs_set(1, 1)
-# Create an object of the class MFRC522
 MIFAREReader = MFRC522.MFRC522(0,0, nanopi)
 
 mqttc = mqtt.Client()
 mqttc.connect("localhost")
 mqttc.publish("test", "ready")
 
-
-# Welcome message
-print("Welcome to the MFRC522 data read example")
 print("Press Ctrl-C to stop.")
 
 # continue_reading = False
@@ -83,26 +77,13 @@ while continue_reading:
     # If we have the UID, continue
     if status == MIFAREReader.MI_OK:
 
-        # Print UID
         print("Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
 
-        # This is the default key for authentication
-        key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
-
-        # Select the scanned tag
         MIFAREReader.select_tag(uid)
         # MIFAREReader.MFRC522_SAK(uid)
 
-        # Authenticate
-        # status = MIFAREReader.MFRC522_Auth(MIFAREReader.PICC_AUTHENT1A, 7, key, uid)
-
-        # Check if authenticated
-        # if status == MIFAREReader.MI_OK:
-
         MIFAREReader.dump_ultralight(uid)
         MIFAREReader.stop_crypto1()
-        # else:
-        #     print("Authentication error")
 
     if timer.is_expired():
         if data_send != 1:
