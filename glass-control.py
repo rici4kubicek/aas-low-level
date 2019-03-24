@@ -7,6 +7,8 @@ from array import array
 from APA102 import APA102
 from timer import timer
 import threading
+import paho.mqtt.client as mqtt
+import paho.mqtt.subscribe as subscribe
 
 nanopi = NANOPISPI.NANOPISPI()
 nanopi.cs_init([6, 7])
@@ -44,6 +46,10 @@ nanopi.cs_set(1, 1)
 # Create an object of the class MFRC522
 MIFAREReader = MFRC522.MFRC522(0,0, nanopi)
 
+mqttc = mqtt.Client()
+mqttc.connect("localhost")
+mqttc.publish("test", "ready")
+
 
 # Welcome message
 print("Welcome to the MFRC522 data read example")
@@ -59,6 +65,7 @@ while continue_reading:
     # If a card is found
     if status == MIFAREReader.MI_OK:
         print("Card detected")
+        mqttc.publish("test", "card detected")
         timer.start(5)
         data_send = 0
         led.prepare_data(20, 0, 15, 5, 0)
