@@ -5,6 +5,7 @@ import signal
 from NANOPISPI import NANOPISPI
 from array import array
 from APA102 import APA102
+from timer import timer
 import threading
 
 nanopi = NANOPISPI.NANOPISPI()
@@ -14,16 +15,19 @@ nanopi.open(0,0,1000000)
 
 led = APA102.APA102(4)
 
-led.prepare_data(0, 0, 15, 5, 0)
-led.prepare_data(0, 100, 30, 5, 1)
-led.prepare_data(100, 0, 50, 5, 2)
-led.prepare_data(0, 45, 21, 5, 3)
+led.prepare_data(0, 0, 0, 5, 0)
+led.prepare_data(0, 0, 0, 5, 1)
+led.prepare_data(0, 0, 0, 5, 2)
+led.prepare_data(0, 0, 0, 5, 3)
 led_blue = led.get_data()
 nanopi.cs_set(0, 1)
 nanopi.write(led_blue)
 nanopi.cs_set(0, 0)
 
+data_send=0
 continue_reading = True
+
+timer = timer.Timer()
 
 
 # Capture SIGINT for cleanup when the script is aborted
@@ -55,6 +59,16 @@ while continue_reading:
     # If a card is found
     if status == MIFAREReader.MI_OK:
         print("Card detected")
+        timer.start(5)
+        data_send = 0
+        led.prepare_data(20, 0, 15, 5, 0)
+        led.prepare_data(0, 20, 0, 5, 1)
+        led.prepare_data(20, 0, 0, 5, 2)
+        led.prepare_data(20, 45, 21, 5, 3)
+        data = led.get_data()
+        nanopi.cs_set(0, 1)
+        nanopi.write(data)
+        nanopi.cs_set(0, 0)
 
     # Get the UID of the card
     (status, uid) = MIFAREReader.anticoll(1)
@@ -82,3 +96,15 @@ while continue_reading:
         MIFAREReader.stop_crypto1()
         # else:
         #     print("Authentication error")
+
+    if timer.is_expired():
+        if data_send != 1:
+            led.prepare_data(0, 0, 0, 5, 0)
+            led.prepare_data(0, 0, 0, 5, 1)
+            led.prepare_data(0, 0, 0, 5, 2)
+            led.prepare_data(0, 0, 0, 5, 3)
+            data = led.get_data()
+            nanopi.cs_set(0, 1)
+            nanopi.write(data)
+            nanopi.cs_set(0, 0)
+            data_send = 1
