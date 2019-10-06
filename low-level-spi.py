@@ -29,7 +29,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger(__name__)
-    handler = logging.handlers.RotatingFileHandler(os.path.abspath("log/low-level-spi.txt"), maxBytes=100000, backupCount=10)
+    handler = logging.handlers.RotatingFileHandler("home/pi/aas-low-level/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
