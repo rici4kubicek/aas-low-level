@@ -6,6 +6,8 @@ from tools.nanopi_spi import *
 from tools.mfrc522 import *
 import paho.mqtt.client as mqtt
 import json
+import os
+import time
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -27,7 +29,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger(__name__)
-    handler = logging.handlers.RotatingFileHandler("home/pi/aas/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
+    handler = logging.handlers.RotatingFileHandler(os.path.abspath("log/low-level-spi.txt"), maxBytes=100000, backupCount=10)
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
@@ -41,6 +43,10 @@ if __name__ == "__main__":
     nano_pi.open(0, 0, 100000)
 
     nano_pi.reader_reset_init()
+    nano_pi.reader_reset_set(1)
+    time.sleep(0.5)
+    nano_pi.reader_reset_set(0)
+    time.sleep(0.5)
     nano_pi.reader_reset_set(1)
 
     MIFAREReader = MFRC522(nano_pi)
