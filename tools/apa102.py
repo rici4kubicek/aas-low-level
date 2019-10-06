@@ -1,4 +1,4 @@
-class APA102:
+class APA102(object):
     def __init__(self, led_count):
         self.led_count = led_count
         self.led_array = [0, 0, 0, 0]

@@ -1,21 +1,15 @@
 # !/usr/bin/python
-import sys, time
-from MFRC522 import MFRC522
+from tools import mfrc522, apa102, nanopi_spi
 import signal
-from NANOPISPI import NANOPISPI
-from array import array
-from APA102 import APA102
 from timer import timer
-import threading
 import paho.mqtt.client as mqtt
-import paho.mqtt.subscribe as subscribe
 
-nanopi = NANOPISPI.NANOPISPI()
+nanopi = nanopi_spi.nanopi_spi()
 nanopi.cs_init([6, 7])
 nanopi.cs_set(0, 1)
 nanopi.open(0,0,100000)
 
-led = APA102.APA102(4)
+led = apa102.APA102(4)
 
 led.prepare_data(0, 0, 0, 5, 0)
 led.prepare_data(0, 0, 0, 5, 1)
@@ -41,7 +35,7 @@ def end_read(signal, frame):
 signal.signal(signal.SIGINT, end_read)
 
 nanopi.cs_set(1, 1)
-MIFAREReader = MFRC522.MFRC522(0,0, nanopi)
+MIFAREReader = mfrc522.MFRC522(0, 0, nanopi)
 
 mqttc = mqtt.Client()
 mqttc.connect("localhost")
