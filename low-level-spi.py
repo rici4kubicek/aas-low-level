@@ -1,4 +1,4 @@
-# !/usr/bin/python
+#!/usr/bin/env python2
 import logging
 import logging.handlers
 from logging.handlers import RotatingFileHandler
@@ -6,7 +6,6 @@ from tools.nanopi_spi import *
 from tools.mfrc522 import *
 import paho.mqtt.client as mqtt
 import json
-
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -20,6 +19,7 @@ __status__ = "Private Beta"
 LL_SPI_TOPIC = "spi"
 LL_READER_TOPIC = LL_SPI_TOPIC + "/reader"
 LL_READER_DATA_TOPIC = LL_READER_TOPIC + "/data"
+LL_READER_DATA_READ_TOPIC = LL_READER_TOPIC + "/data/read"
 LL_SPI_MSG_TOPIC = LL_SPI_TOPIC + "/msg"
 
 
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger(__name__)
-    handler = logging.handlers.RotatingFileHandler("log/low-level-spi.txt", maxBytes=100000, backupCount=10)
+    handler = logging.handlers.RotatingFileHandler("home/pi/aas/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
@@ -71,4 +71,4 @@ if __name__ == "__main__":
             card_data["data"] = MIFAREReader.dump_ultralight(uid)
             MIFAREReader.stop_crypto1()
 
-            mqttc.publish(LL_READER_DATA_TOPIC, json.dumps(card_data))
+            mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
