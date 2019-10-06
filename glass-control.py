@@ -13,7 +13,7 @@ import paho.mqtt.subscribe as subscribe
 nanopi = NANOPISPI.NANOPISPI()
 nanopi.cs_init([6, 7])
 nanopi.cs_set(0, 1)
-nanopi.open(0,0,1000000)
+nanopi.open(0,0,100000)
 
 led = APA102.APA102(4)
 
