@@ -30,7 +30,11 @@ if __name__ == "__main__":
 
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger(__name__)
-    handler = logging.handlers.RotatingFileHandler("home/pi/aas-low-level/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
+    try:
+        handler = logging.handlers.RotatingFileHandler("home/pi/aas-low-level/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
+    except:
+        handler = logging.handlers.RotatingFileHandler("log/low-level-spi.txt", maxBytes=100000,
+                                                       backupCount=10)
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
@@ -80,6 +84,7 @@ if __name__ == "__main__":
             MIFAREReader.select_tag(uid)
             card_data["data"] = MIFAREReader.dump_ultralight(uid)
             MIFAREReader.stop_crypto1()
+            MIFAREReader.init()
 
             mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
 
