@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f56f8bf-97a7-4e83-9cd2-fd882c25f160" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tools/shutdown.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/low-level-spi.py" beforeDir="false" afterPath="$PROJECT_DIR$/low-level-spi.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -116,7 +118,7 @@
       <workItem from="1569435261144" duration="1574000" />
       <workItem from="1570367198467" duration="4802000" />
       <workItem from="1570372466537" duration="1189000" />
-      <workItem from="1570373939700" duration="911000" />
+      <workItem from="1570373939700" duration="2208000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor of MFRC522 lib">
       <created>1553432953837</created>

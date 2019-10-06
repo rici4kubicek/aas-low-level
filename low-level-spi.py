@@ -4,6 +4,7 @@ import logging.handlers
 from logging.handlers import RotatingFileHandler
 from tools.nanopi_spi import *
 from tools.mfrc522 import *
+from tools.shutdown import *
 import paho.mqtt.client as mqtt
 import json
 import os
@@ -39,6 +40,8 @@ if __name__ == "__main__":
     logger.info("Core: ===================== Application start ========================")
     logger.info("Script version: {}".format(__version__))
 
+    shutdown = EShutdown()
+
     nano_pi = NanoPiSpi()
     nano_pi.open(0, 0, 100000)
 
@@ -56,6 +59,7 @@ if __name__ == "__main__":
     mqttc.publish(LL_SPI_MSG_TOPIC, "SPI is prepared")
 
     while True:
+        card_data = {}
         # Scan for cards
         (status, TagType) = MIFAREReader.request(MIFAREReader.PICC_REQIDL)
 
@@ -63,13 +67,13 @@ if __name__ == "__main__":
         if status == MIFAREReader.MI_OK:
             mqttc.publish(LL_READER_TOPIC, "Some card detected")
             logger.debug("CARD: card detected")
+            card_data["timestamp"] = time.time()
 
         # Get the UID of the card
         (status, uid) = MIFAREReader.anticoll(1)
 
         # If we have the UID, continue
         if status == MIFAREReader.MI_OK:
-            card_data = {}
             logger.debug("Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
             # place read uid to dict
             card_data["uid"] = uid
@@ -78,3 +82,8 @@ if __name__ == "__main__":
             MIFAREReader.stop_crypto1()
 
             mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
+
+        if shutdown.killed:
+            break
+
+    mqttc.publish(LL_SPI_MSG_TOPIC, "SPI LL shutdown")
