@@ -33,10 +33,25 @@ class AasSpi(object):
         self.nanopi = None
         self.led = None
         self.logger = None
+        self.send_led = False
 
 
 def on_leds(moqs, obj, msg):
     obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload))
+
+    try:
+        data = json.loads(msg.payload)
+        obj.led.prepare_data(data["led_0"]["red"], data["led_0"]["green"], data["led_0"]["blue"],
+                             data["led_0"]["brightness"], 0)
+        obj.led.prepare_data(data["led_1"]["red"], data["led_1"]["green"], data["led_1"]["blue"],
+                             data["led_1"]["brightness"], 1)
+        obj.led.prepare_data(data["led_2"]["red"], data["led_2"]["green"], data["led_2"]["blue"],
+                             data["led_2"]["brightness"], 2)
+        obj.led.prepare_data(data["led_3"]["red"], data["led_3"]["green"], data["led_3"]["blue"],
+                             data["led_3"]["brightness"], 3)
+        obj.send_led = True
+    except:
+        obj.logger.error("MQTT: received msq is not json with expected information")
 
 
 def on_connect(mqtt_client, obj, flags, rc):
@@ -140,6 +155,12 @@ if __name__ == "__main__":
             MIFAREReader.stop_crypto1()
 
             mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
+
+        if aas.send_led:
+            aas.nanopi.led_cs_set(1)
+            aas.nanopi.write(aas.led.get_data())
+            aas.nanopi.led_cs_set(0)
+            aas.send_led = False
 
         if shutdown.killed:
             break
