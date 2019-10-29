@@ -84,7 +84,6 @@ if __name__ == "__main__":
             MIFAREReader.select_tag(uid)
             card_data["data"] = MIFAREReader.dump_ultralight(uid)
             MIFAREReader.stop_crypto1()
-            MIFAREReader.init()
 
             mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
 

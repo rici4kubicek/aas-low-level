@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1f56f8bf-97a7-4e83-9cd2-fd882c25f160" name="Default Changelist" comment="" />
+    <list default="true" id="1f56f8bf-97a7-4e83-9cd2-fd882c25f160" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/low-level-spi.py" beforeDir="false" afterPath="$PROJECT_DIR$/low-level-spi.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,6 +119,9 @@
       <workItem from="1570367198467" duration="4802000" />
       <workItem from="1570372466537" duration="1189000" />
       <workItem from="1570373939700" duration="2880000" />
+      <workItem from="1570376922579" duration="1505000" />
+      <workItem from="1572346920937" duration="1063000" />
+      <workItem from="1572375855439" duration="326000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor of MFRC522 lib">
       <created>1553432953837</created>
@@ -263,7 +270,14 @@
       <option name="project" value="LOCAL" />
       <updated>1570376815475</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Allow to run script from pc">
+      <created>1570377081979</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1570377081979</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -300,10 +314,11 @@
     <MESSAGE value="Update log file path and shell scripts" />
     <MESSAGE value="Add shutdown handler, add timestamp to mqtt message" />
     <MESSAGE value="Update README.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update README.md" />
+    <MESSAGE value="Allow to run script from pc" />
+    <option name="LAST_COMMIT_MESSAGE" value="Allow to run script from pc" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/aas_low_level$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1570376995609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/aas_low_level$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1572347712896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aas_glass_control$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1570372148715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
