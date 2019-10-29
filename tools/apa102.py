@@ -1,3 +1,6 @@
+from tools import *
+
+
 class APA102(object):
     def __init__(self, led_count):
         self.led_count = led_count
@@ -15,9 +18,8 @@ class APA102(object):
         self.led_array.append(0xff)
 
     def prepare_data(self, r, g, b, brightness, led_idx):
-        if brightness > 32:
-            brightness = 31
-        self.led_array[led_idx * 4 + 4] = 0xe0 + brightness
+        _brightness = valmap(brightness, 0, 100, 0, 31)
+        self.led_array[led_idx * 4 + 4] = 0xe0 + _brightness
         self.led_array[led_idx * 4 + 5] = b
         self.led_array[led_idx * 4 + 6] = g
         self.led_array[led_idx * 4 + 7] = r
