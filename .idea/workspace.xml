@@ -4,7 +4,6 @@
     <list default="true" id="1f56f8bf-97a7-4e83-9cd2-fd882c25f160" name="Default Changelist" comment="Remove reinit of reader">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/low-level-spi.py" beforeDir="false" afterPath="$PROJECT_DIR$/low-level-spi.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/apa102.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/apa102.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -121,7 +120,7 @@
       <workItem from="1570373939700" duration="2880000" />
       <workItem from="1570376922579" duration="1505000" />
       <workItem from="1572346920937" duration="1063000" />
-      <workItem from="1572375855439" duration="1529000" />
+      <workItem from="1572375855439" duration="2090000" />
     </task>
     <task id="LOCAL-00001" summary="Refactor of MFRC522 lib">
       <created>1553432953837</created>
@@ -291,7 +290,21 @@
       <option name="project" value="LOCAL" />
       <updated>1572377132385</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="apa102: refactoring">
+      <created>1572377406691</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1572377406691</updated>
+    </task>
+    <task id="LOCAL-00026" summary="APA102: check input range of colours">
+      <created>1572377694085</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1572377694085</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -331,10 +344,12 @@
     <MESSAGE value="Allow to run script from pc" />
     <MESSAGE value="Remove reinit of reader" />
     <MESSAGE value="APA102: allow to set brightness of LED in range 0-100&#10;&#10;* brightness value is internally recomputed to value in range 0-31" />
-    <option name="LAST_COMMIT_MESSAGE" value="APA102: allow to set brightness of LED in range 0-100&#10;&#10;* brightness value is internally recomputed to value in range 0-31" />
+    <MESSAGE value="apa102: refactoring" />
+    <MESSAGE value="APA102: check input range of colours" />
+    <option name="LAST_COMMIT_MESSAGE" value="APA102: check input range of colours" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/aas_low_level$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1572377216898" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/aas_low_level$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1572377919224" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/aas_glass_control$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1570372148715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
