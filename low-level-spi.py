@@ -109,10 +109,10 @@ if __name__ == "__main__":
 
     aas.led = APA102(4)
 
-    aas.led.prepare_data(r=50, g=0, b=0, brightness=10, led_idx=0)
-    aas.led.prepare_data(r=20, g=10, b=0, brightness=25, led_idx=1)
-    aas.led.prepare_data(r=30, g=0, b=100, brightness=60, led_idx=2)
-    aas.led.prepare_data(r=100, g=5, b=100, brightness=20, led_idx=3)
+    aas.led.prepare_data(0, 0, 0, 0, 0)
+    aas.led.prepare_data(0, 0, 0, 0, 1)
+    aas.led.prepare_data(0, 0, 0, 0, 2)
+    aas.led.prepare_data(0, 0, 0, 0, 3)
 
     aas.nanopi.led_cs_init()
     aas.nanopi.led_cs_set(1)
