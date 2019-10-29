@@ -21,3 +21,15 @@
 * array `data` with 16 sub-arrays with 16 bytes
 * array `uid` with 5 bytes
 * number `timestamp` with timestamp of rfid tag attached event
+
+## Stage 2
+**Write color data received from MQTT to LEDs**
+
+### MQTT structure
+* new data topic:
+    * `spi/led` - led control topic in json format
+#### Structure of _json_ message in `spi/led` topic
+* four objects with four entries
+* objects are named like `led_0`, `led_1`, `led_2`, `led_3`
+* each object has entry `red`, `green`, `blue` for color components and `brightness` for brightness value
+* color components range is 0 - 255, brightness range is 0-100 (in percents)
