@@ -5,6 +5,7 @@ from logging.handlers import RotatingFileHandler
 from tools.nanopi_spi import *
 from tools.mfrc522 import *
 from tools.shutdown import *
+from tools.apa102 import *
 import paho.mqtt.client as mqtt
 import json
 import os
@@ -24,6 +25,11 @@ LL_READER_TOPIC = LL_SPI_TOPIC + "/reader"
 LL_READER_DATA_TOPIC = LL_READER_TOPIC + "/data"
 LL_READER_DATA_READ_TOPIC = LL_READER_TOPIC + "/data/read"
 LL_SPI_MSG_TOPIC = LL_SPI_TOPIC + "/msg"
+LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
+
+
+def on_leds(moqs, obj, msg):
+    print(msg.payload)
 
 
 if __name__ == "__main__":
@@ -56,11 +62,24 @@ if __name__ == "__main__":
     time.sleep(0.5)
     nano_pi.reader_reset_set(1)
 
+    led = APA102(4)
+
+    led.prepare_data(r=100, g=0, b=0, brightness=10, led_idx=0)
+    led.prepare_data(r=0, g=100, b=0, brightness=25, led_idx=1)
+    led.prepare_data(r=0, g=0, b=100, brightness=60, led_idx=2)
+    led.prepare_data(r=100, g=100, b=100, brightness=20, led_idx=3)
+
+    nano_pi.led_cs_init()
+    nano_pi.led_cs_set(1)
+    nano_pi.write(led.get_data())
+    nano_pi.led_cs_set(0)
+
     MIFAREReader = MFRC522(nano_pi)
 
     mqttc = mqtt.Client()
     mqttc.connect("localhost")
     mqttc.publish(LL_SPI_MSG_TOPIC, "SPI is prepared")
+    mqttc.message_callback_add(LL_LED_TOPIC, on_leds)
 
     while True:
         card_data = {}
