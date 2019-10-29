@@ -1,13 +1,8 @@
 from tools import *
-import logging
-
-# create logger
-module_logger = logging.getLogger('apa102')
 
 
 class APA102(object):
     def __init__(self, led_count):
-        self._logger = logging.getLogger('apa102')
         self._led_count = led_count
         self._led_array = [0, 0, 0, 0]
         i = 0
