@@ -5,6 +5,7 @@ from logging.handlers import RotatingFileHandler
 from tools.nanopi_spi import *
 from tools.mfrc522 import *
 from tools.shutdown import *
+from tools.apa102 import *
 import paho.mqtt.client as mqtt
 import json
 import os
@@ -24,41 +25,113 @@ LL_READER_TOPIC = LL_SPI_TOPIC + "/reader"
 LL_READER_DATA_TOPIC = LL_READER_TOPIC + "/data"
 LL_READER_DATA_READ_TOPIC = LL_READER_TOPIC + "/data/read"
 LL_SPI_MSG_TOPIC = LL_SPI_TOPIC + "/msg"
+LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
+
+
+class AasSpi(object):
+    def __init__(self):
+        self.nanopi = None
+        self.led = None
+        self.logger = None
+        self.send_led = False
+
+
+def on_leds(moqs, obj, msg):
+    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload))
+
+    try:
+        data = json.loads(msg.payload)
+        obj.led.prepare_data(data["led_0"]["red"], data["led_0"]["green"], data["led_0"]["blue"],
+                             data["led_0"]["brightness"], 0)
+        obj.led.prepare_data(data["led_1"]["red"], data["led_1"]["green"], data["led_1"]["blue"],
+                             data["led_1"]["brightness"], 1)
+        obj.led.prepare_data(data["led_2"]["red"], data["led_2"]["green"], data["led_2"]["blue"],
+                             data["led_2"]["brightness"], 2)
+        obj.led.prepare_data(data["led_3"]["red"], data["led_3"]["green"], data["led_3"]["blue"],
+                             data["led_3"]["brightness"], 3)
+        obj.send_led = True
+    except:
+        obj.logger.error("MQTT: received msq is not json with expected information")
+
+
+def on_connect(mqtt_client, obj, flags, rc):
+    global mqtt_ready
+    if rc==0:
+        obj.logger.info("MQTT: Connected ")
+        mqtt_ready = 1
+        mqttc.subscribe(LL_LED_TOPIC)
+    else:
+        mqtt_ready = 0
+        retry_time = 2
+        while rc != 0:
+            time.sleep(retry_time)
+            obj.logger.info("MQTT: Reconnecting ...")
+            try:
+                rc = mqtt_client.reconnect()
+            except Exception as e:
+                obj.logger.error("MQTT: Connection request error (Code: {c}, Message: {m})!"
+                    .format(c=type(e).__name__, m=str(e)))
+                rc = 1
+                retry_time = 10  # probably wifi/internet problem so slow down the reconnect periode
 
 
 if __name__ == "__main__":
 
+    aas = AasSpi()
+
     logging.basicConfig(level=logging.DEBUG)
-    logger = logging.getLogger(__name__)
-    handler = logging.handlers.RotatingFileHandler("home/pi/aas-low-level/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
+    aas.logger = logging.getLogger(__name__)
+    try:
+        handler = logging.handlers.RotatingFileHandler("home/pi/aas-low-level/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
+    except:
+        handler = logging.handlers.RotatingFileHandler("log/low-level-spi.txt", maxBytes=100000,
+                                                       backupCount=10)
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
 
-    logger.addHandler(handler)
+    aas.logger.addHandler(handler)
 
-    logger.info("Core: ===================== Application start ========================")
-    logger.info("Script version: {}".format(__version__))
+    aas.logger.info("Core: ===================== Application start ========================")
+    aas.logger.info("Script version: {}".format(__version__))
 
     shutdown = EShutdown()
 
-    nano_pi = NanoPiSpi()
-    nano_pi.open(0, 0, 100000)
+    aas.nanopi = NanoPiSpi()
+    aas.nanopi.open(0, 0, 100000)
 
-    nano_pi.reader_reset_init()
-    nano_pi.reader_reset_set(1)
+    aas.nanopi.reader_reset_init()
+    aas.nanopi.reader_reset_set(1)
     time.sleep(0.5)
-    nano_pi.reader_reset_set(0)
+    aas.nanopi.reader_reset_set(0)
     time.sleep(0.5)
-    nano_pi.reader_reset_set(1)
+    aas.nanopi.reader_reset_set(1)
 
-    MIFAREReader = MFRC522(nano_pi)
+    aas.led = APA102(4)
+
+    aas.led.prepare_data(r=50, g=0, b=0, brightness=10, led_idx=0)
+    aas.led.prepare_data(r=20, g=10, b=0, brightness=25, led_idx=1)
+    aas.led.prepare_data(r=30, g=0, b=100, brightness=60, led_idx=2)
+    aas.led.prepare_data(r=100, g=5, b=100, brightness=20, led_idx=3)
+
+    aas.nanopi.led_cs_init()
+    aas.nanopi.led_cs_set(1)
+    aas.nanopi.write(aas.led.get_data())
+    aas.nanopi.led_cs_set(0)
+
+    MIFAREReader = MFRC522(aas.nanopi)
 
     mqttc = mqtt.Client()
     mqttc.connect("localhost")
     mqttc.publish(LL_SPI_MSG_TOPIC, "SPI is prepared")
+    mqttc.on_connect = on_connect
+    mqttc.user_data_set(aas)
+    mqttc.message_callback_add(LL_LED_TOPIC, on_leds)
 
     while True:
+
+        mqttc.loop()
+
         card_data = {}
         # Scan for cards
         (status, TagType) = MIFAREReader.request(MIFAREReader.PICC_REQIDL)
@@ -66,7 +139,7 @@ if __name__ == "__main__":
         # If a card is found
         if status == MIFAREReader.MI_OK:
             mqttc.publish(LL_READER_TOPIC, "Some card detected")
-            logger.debug("CARD: card detected")
+            aas.logger.debug("CARD: card detected")
             card_data["timestamp"] = time.time()
 
         # Get the UID of the card
@@ -74,7 +147,7 @@ if __name__ == "__main__":
 
         # If we have the UID, continue
         if status == MIFAREReader.MI_OK:
-            logger.debug("Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
+            aas.logger.debug("Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
             # place read uid to dict
             card_data["uid"] = uid
             MIFAREReader.select_tag(uid)
@@ -82,6 +155,12 @@ if __name__ == "__main__":
             MIFAREReader.stop_crypto1()
 
             mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
+
+        if aas.send_led:
+            aas.nanopi.led_cs_set(1)
+            aas.nanopi.write(aas.led.get_data())
+            aas.nanopi.led_cs_set(0)
+            aas.send_led = False
 
         if shutdown.killed:
             break
