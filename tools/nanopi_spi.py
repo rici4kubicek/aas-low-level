@@ -27,7 +27,7 @@ class NanoPiSpi(object):
         self.spi = spidev.SpiDev()
         self.spi.open(spi_bus, spi_device)
         self.spi.max_speed_hz = max_speed_hz
-        self.spi.no_cs = True
+        # self.spi.no_cs = True
 
     def led_cs_init(self):
         """
