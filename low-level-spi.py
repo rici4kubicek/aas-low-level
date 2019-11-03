@@ -24,6 +24,7 @@ LL_SPI_TOPIC = "spi"
 LL_READER_TOPIC = LL_SPI_TOPIC + "/reader"
 LL_READER_DATA_TOPIC = LL_READER_TOPIC + "/data"
 LL_READER_DATA_READ_TOPIC = LL_READER_TOPIC + "/data/read"
+LL_READER_DATA_WRITE_TOPIC = LL_READER_TOPIC + "/data/write"
 LL_SPI_MSG_TOPIC = LL_SPI_TOPIC + "/msg"
 LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
 
@@ -34,6 +35,8 @@ class AasSpi(object):
         self.led = None
         self.logger = None
         self.send_led = False
+        self.write_data = {}
+        self.write_data_flag = False
 
 
 def on_leds(moqs, obj, msg):
@@ -54,12 +57,26 @@ def on_leds(moqs, obj, msg):
         obj.logger.error("MQTT: received msq is not json with expected information")
 
 
+def on_write(moqs, obj, msg):
+    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload))
+
+    try:
+        data = json.loads(msg.payload)
+        obj.write_data["sector"] = data["sector"]
+        obj.write_data["data"] = data["data"]
+        obj.logger.debug(obj.write_data)
+        obj.write_data_flag = True
+    except:
+        obj.logger.error("MQTT: received msq is not json with expected information")
+
+
 def on_connect(mqtt_client, obj, flags, rc):
     global mqtt_ready
     if rc==0:
         obj.logger.info("MQTT: Connected ")
         mqtt_ready = 1
         mqttc.subscribe(LL_LED_TOPIC)
+        mqttc.subscribe(LL_READER_DATA_WRITE_TOPIC)
     else:
         mqtt_ready = 0
         retry_time = 2
@@ -125,6 +142,7 @@ if __name__ == "__main__":
     mqttc.on_connect = on_connect
     mqttc.user_data_set(aas)
     mqttc.message_callback_add(LL_LED_TOPIC, on_leds)
+    mqttc.message_callback_add(LL_READER_DATA_WRITE_TOPIC, on_write)
 
     while True:
 
@@ -150,6 +168,14 @@ if __name__ == "__main__":
             card_data["uid"] = uid
             MIFAREReader.select_tag(uid)
             card_data["data"] = MIFAREReader.dump_ultralight(uid)
+
+            if aas.write_data_flag:
+                aas.logger.debug(
+                    "Card UID: {}, {}, {}, {} write data to sector".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
+                                                                           hex(uid[3]), aas.write_data["sector"]))
+                MIFAREReader.write(aas.write_data["sector"], aas.write_data["data"])
+                aas.write_data_flag = False
+
             MIFAREReader.stop_crypto1()
 
             mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
