@@ -33,3 +33,13 @@
 * objects are named like `led_0`, `led_1`, `led_2`, `led_3`
 * each object has entry `red`, `green`, `blue` for color components and `brightness` for brightness value
 * color components range is 0 - 255, brightness range is 0-100 (in percents)
+
+## Stage 3
+**Write data received from MQTT to tag memory on defined position**
+
+### MQTT structure
+* new data topic:
+    * `spi/reader/data/write` - data write topic in json format
+#### Structure of _json_ message in `spi/reader/data/write` topic
+* page address in field `sector`
+* four bytes in array `data`
