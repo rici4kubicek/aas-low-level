@@ -98,14 +98,9 @@ if __name__ == "__main__":
     shutdown = EShutdown()
 
     aas.nanopi = NanoPiSpi()
+    aas.nanopi.led_cs_init()
+    aas.nanopi.led_cs_set(1)
     aas.nanopi.open(0, 0, 100000)
-
-    aas.nanopi.reader_reset_init()
-    aas.nanopi.reader_reset_set(1)
-    time.sleep(0.5)
-    aas.nanopi.reader_reset_set(0)
-    time.sleep(0.5)
-    aas.nanopi.reader_reset_set(1)
 
     aas.led = APA102(4)
 
@@ -118,6 +113,9 @@ if __name__ == "__main__":
     aas.nanopi.led_cs_set(1)
     aas.nanopi.write(aas.led.get_data())
     aas.nanopi.led_cs_set(0)
+
+    aas.nanopi.reader_reset_init()
+    aas.nanopi.reader_reset_set(1)
 
     MIFAREReader = MFRC522(aas.nanopi)
 

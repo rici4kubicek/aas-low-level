@@ -1,6 +1,7 @@
 import spidev
 import threading
-import gpio
+from nightWiring import io
+from array import array
 
 
 class NanoPiSpi(object):
@@ -10,7 +11,13 @@ class NanoPiSpi(object):
     READER_CS_PIN = 67
 
     def __init__(self):
-        gpio.Controller.available_pins = gpio.Controller.available_pins
+
+        pin_map = array('i', [self.LED_CS_PIN, self.READER_RST_PIN, self.READER_RST_PIN])
+        io.setupGPIO(pin_map, len([self.LED_CS_PIN, self.READER_RST_PIN, self.READER_RST_PIN]))
+        idx = 0
+        while idx < len([self.LED_CS_PIN, self.READER_RST_PIN, self.READER_RST_PIN]):
+            io.pinMode(idx, io.OUTPUT)
+            idx = idx + 1
         self.mutex = threading.Lock()
         self.spi = None
         self.led_cs = None
@@ -33,8 +40,7 @@ class NanoPiSpi(object):
         """
         Initiate LED CS pin as output
         """
-        gpio.Controller.available_pins = gpio.Controller.available_pins + [NanoPiSpi.LED_CS_PIN]
-        self.led_cs = gpio.Controller.alloc_pin(NanoPiSpi.LED_CS_PIN, gpio.OUTPUT)
+        pass
 
     def led_cs_set(self, value):
         """
@@ -44,30 +50,33 @@ class NanoPiSpi(object):
         :return:
         """
         if value == 1:
-            self.led_cs.set()
+            io.digitalWrite(0, io.HIGH)
         if value == 0:
-            self.led_cs.reset()
+            io.digitalWrite(0, io.LOW)
 
     def reader_reset_init(self):
         """
         Initiate reader reset pin as output
         :return:
         """
-        gpio.Controller.available_pins = gpio.Controller.available_pins + [NanoPiSpi.READER_RST_PIN]
-        self.reader_rst = gpio.Controller.alloc_pin(NanoPiSpi.READER_RST_PIN, gpio.OUTPUT)
+        pass
 
     def reader_reset_set(self, value):
+        """
+        Set value on RST pin
+        :param value:
+        :return:
+        """
         if value == 1:
-            self.reader_rst.set()
+            io.digitalWrite(1, io.HIGH)
         if value == 0:
-            self.reader_rst.reset()
+            io.digitalWrite(1, io.LOW)
 
     def reader_cs_init(self):
         """
         Initiate reader CS pin as output
         """
-        gpio.Controller.available_pins = gpio.Controller.available_pins + [NanoPiSpi.READER_CS_PIN]
-        self.reader_cs = gpio.Controller.alloc_pin(NanoPiSpi.READER_CS_PIN, gpio.OUTPUT)
+        pass
 
     def reader_cs_set(self, value):
         """
@@ -77,9 +86,9 @@ class NanoPiSpi(object):
         :return:
         """
         if value == 1:
-            self.reader_cs.set()
+            io.digitalWrite(2, io.HIGH)
         if value == 0:
-            self.reader_cs.reset()
+            io.digitalWrite(2, io.LOW)
 
     def write(self, data):
         self.mutex.acquire()
