@@ -1,8 +1,13 @@
-#!/usr/bin/env python2
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 import paho.mqtt.client as mqtt
 import json
 import os
 import time
+import Adafruit_SSD1306
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -37,6 +42,7 @@ def on_connect(mqtt_client, obj, flags, rc):
                 rc = 1
                 retry_time = 10  # probably wifi/internet problem so slow down the reconnect periode
 
+
 if __name__ == "__main__":
 
     mqttc = mqtt.Client()
@@ -45,3 +51,24 @@ if __name__ == "__main__":
     mqttc.on_connect = on_connect
     # mqttc.user_data_set(aas)
     # mqttc.message_callback_add(LL_DISPLAY_TOPIC, on_display)
+
+    disp = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus='0')
+    disp.begin()
+    disp.clear()
+    disp.display()
+    width = disp.width
+    height = disp.height
+    image = Image.new('1', (width, height))
+    # create object
+    draw = ImageDraw.Draw(image)
+    # clear display
+    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+    # load basic font
+
+    font = ImageFont.truetype('static/Vafle_VUT_Regular.ttf', 15)
+
+    draw.text((0,0), u"žluťoučký kůň", font=font, fill=255)
+
+    disp.image(image)
+    disp.display()
+
