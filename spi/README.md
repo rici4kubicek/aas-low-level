@@ -1,4 +1,4 @@
-# aas-low-level
+# aas-low-level - SPI part
 
 ## Stage 1
 **Read UID and data from tag and send it throw mqtt to local broker**
