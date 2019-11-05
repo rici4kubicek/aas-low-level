@@ -22,6 +22,7 @@ LL_I2C_TOPIC = "i2c"
 LL_DISPLAY_TOPIC = LL_I2C_TOPIC + "/display"
 LL_I2C_MSG_TOPIC = LL_I2C_TOPIC + "/msg"
 
+
 def on_connect(mqtt_client, obj, flags, rc):
     global mqtt_ready
     if rc==0:
