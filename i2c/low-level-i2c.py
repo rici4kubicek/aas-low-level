@@ -27,14 +27,20 @@ LL_I2C_MSG_TOPIC = LL_I2C_TOPIC + "/msg"
 class AasI2C(object):
     def __init__(self):
         self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus='0')
-        _width = self.display.width
-        _height = self.display.height
-        self.image = Image.new('1', (_width, _height))
+        self._width = self.display.width
+        self._height = self.display.height
+        self.image = Image.new('1', (self._width, self._height))
         self.draw = ImageDraw.Draw(self.image)
-        self.draw.rectangle((0, 0, _width, _height), outline=0, fill=0)
+        self.draw.rectangle((0, 0, self._width, self._height), outline=0, fill=0)
         self.fonts = {}
         self.write_text = {}
-        self.write_text_flag = False
+        self.display_command = None
+
+    def clear_display(self):
+        self.display.clear()
+        self.draw.rectangle((0, 0, self._width, self._height), outline=0, fill=0)
+        self.display.display()
+        self.display_command = ""
 
     def load_fonts(self, size):
         path = './static/'
@@ -44,6 +50,27 @@ class AasI2C(object):
         for font in files:
             if fnmatch.fnmatch(font, pattern):
                 self.fonts[font[:-4] + "-" + str(size) + ""] = ImageFont.truetype("" + path + font + "", size)
+
+
+def on_display(moqs, obj, msg):
+    try:
+        data = json.loads(msg.payload)
+
+        if 'cmd' in data.keys():
+            if data["cmd"] == "clear":
+                obj.display_command = "clear"
+            elif data["cmd"] == "write":
+                obj.display_command = "write"
+            else:
+                obj.display_command = None
+
+        if 'text' in data.keys() and 'font' in data.keys() and 'pos_x' in data.keys() and 'pos_y' in data.keys():
+            obj.write_text["text"] = data["text"]
+            obj.write_text["font"] = data["font"]
+            obj.write_text["pos_x"] = data["pos_x"]
+            obj.write_text["pos_y"] = data["pos_y"]
+    except:
+        pass
 
 
 def on_connect(mqtt_client, obj, flags, rc):
@@ -65,14 +92,15 @@ def on_connect(mqtt_client, obj, flags, rc):
 
 if __name__ == "__main__":
 
+    aas = AasI2C()
+
     mqttc = mqtt.Client()
     mqttc.connect("localhost")
     mqttc.publish(LL_I2C_MSG_TOPIC, "I2C is prepared")
     mqttc.on_connect = on_connect
-    # mqttc.user_data_set(aas)
-    # mqttc.message_callback_add(LL_DISPLAY_TOPIC, on_display)
+    mqttc.user_data_set(aas)
+    mqttc.message_callback_add(LL_DISPLAY_TOPIC, on_display)
 
-    aas = AasI2C()
     aas.display.begin()
     aas.display.clear()
     aas.display.display()
@@ -86,3 +114,13 @@ if __name__ == "__main__":
     aas.display.image(aas.image)
     aas.display.display()
 
+    while 1:
+        mqttc.loop()
+
+        if aas.display_command == "clear":
+            aas.clear_display()
+        elif aas.display_command == "write":
+            aas.draw.text((aas.write_text["pos_x"], aas.write_text["pos_y"]), aas.write_text["text"], font=aas.fonts[aas.write_text["font"]], fill=255)
+            aas.display.image(aas.image)
+            aas.display.display()
+            aas.display_command = ""
