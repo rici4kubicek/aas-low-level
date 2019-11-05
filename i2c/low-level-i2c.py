@@ -26,7 +26,12 @@ LL_I2C_MSG_TOPIC = LL_I2C_TOPIC + "/msg"
 
 class AasI2C(object):
     def __init__(self):
-        self.display = None
+        self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus='0')
+        _width = self.display.width
+        _height = self.display.height
+        self.image = Image.new('1', (_width, _height))
+        self.draw = ImageDraw.Draw(self.image)
+        self.draw.rectangle((0, 0, _width, _height), outline=0, fill=0)
         self.fonts = {}
         self.write_text = {}
         self.write_text_flag = False
@@ -67,23 +72,17 @@ if __name__ == "__main__":
     # mqttc.user_data_set(aas)
     # mqttc.message_callback_add(LL_DISPLAY_TOPIC, on_display)
 
-    disp = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus='0')
-    disp.begin()
-    disp.clear()
-    disp.display()
-    width = disp.width
-    height = disp.height
-    image = Image.new('1', (width, height))
-    # create object
-    draw = ImageDraw.Draw(image)
-    # clear display
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
-    # load basic font
+    aas = AasI2C()
+    aas.display.begin()
+    aas.display.clear()
+    aas.display.display()
 
-    font = ImageFont.truetype('static/Vafle_VUT_Regular.ttf', 15)
+    aas.load_fonts(10)
+    aas.load_fonts(15)
 
-    draw.text((0,0), u"žluťoučký kůň", font=font, fill=255)
+    aas.draw.text((0, 0), u"žluťoučký kůň", font=aas.fonts["Vafle_VUT_Regular-15"], fill=255)
+    aas.draw.text((10, 20), u" & kůň", font=aas.fonts["Arial-10"], fill=255)
 
-    disp.image(image)
-    disp.display()
+    aas.display.image(aas.image)
+    aas.display.display()
 
