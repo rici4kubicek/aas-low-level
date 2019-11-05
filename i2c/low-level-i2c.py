@@ -5,6 +5,7 @@ import json
 import os
 import fnmatch
 import time
+import subprocess
 import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
@@ -106,10 +107,13 @@ if __name__ == "__main__":
     aas.display.display()
 
     aas.load_fonts(10)
+    aas.load_fonts(12)
     aas.load_fonts(15)
 
-    aas.draw.text((0, 0), u"žluťoučký kůň", font=aas.fonts["Vafle_VUT_Regular-15"], fill=255)
-    aas.draw.text((10, 20), u" & kůň", font=aas.fonts["Arial-10"], fill=255)
+    cmd = "hostname -I | cut -d\' \' -f1"
+    IP = subprocess.check_output(cmd, shell=True)
+
+    aas.draw.text((2, 10), "IP: " + str(IP), font=aas.fonts["Arial-12"], fill=255)
 
     aas.display.image(aas.image)
     aas.display.display()
