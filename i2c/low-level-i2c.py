@@ -3,6 +3,7 @@
 import paho.mqtt.client as mqtt
 import json
 import os
+import fnmatch
 import time
 import Adafruit_SSD1306
 from PIL import Image
@@ -23,10 +24,26 @@ LL_DISPLAY_TOPIC = LL_I2C_TOPIC + "/display"
 LL_I2C_MSG_TOPIC = LL_I2C_TOPIC + "/msg"
 
 
+class AasI2C(object):
+    def __init__(self):
+        self.display = None
+        self.fonts = {}
+        self.write_text = {}
+        self.write_text_flag = False
+
+    def load_fonts(self, size):
+        path = './static/'
+
+        files = os.listdir(path)
+        pattern = "*.ttf"
+        for font in files:
+            if fnmatch.fnmatch(font, pattern):
+                self.fonts[font[:-4] + "-" + str(size) + ""] = ImageFont.truetype("" + path + font + "", size)
+
+
 def on_connect(mqtt_client, obj, flags, rc):
     global mqtt_ready
     if rc==0:
-        obj.logger.info("MQTT: Connected ")
         mqtt_ready = 1
         mqttc.subscribe(LL_DISPLAY_TOPIC)
     else:
@@ -34,12 +51,9 @@ def on_connect(mqtt_client, obj, flags, rc):
         retry_time = 2
         while rc != 0:
             time.sleep(retry_time)
-            obj.logger.info("MQTT: Reconnecting ...")
             try:
                 rc = mqtt_client.reconnect()
             except Exception as e:
-                obj.logger.error("MQTT: Connection request error (Code: {c}, Message: {m})!"
-                    .format(c=type(e).__name__, m=str(e)))
                 rc = 1
                 retry_time = 10  # probably wifi/internet problem so slow down the reconnect periode
 
