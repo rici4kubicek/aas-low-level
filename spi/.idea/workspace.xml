@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1f56f8bf-97a7-4e83-9cd2-fd882c25f160" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/aas-low-level.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../i2c/low-level-i2c.py" beforeDir="false" afterPath="$PROJECT_DIR$/../i2c/low-level-i2c.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/aas-low-level.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/aas-low-level.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../i2c/.idea/deployment.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../i2c/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../i2c/.idea/i2c.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../i2c/.idea/i2c.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../i2c/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../i2c/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/aas-low-level.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/remote-mappings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,37 +22,15 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/aas_glass_control$glass_control.coverage" NAME="glass-control Coverage Results" MODIFIED="1553459952216" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="1RL8x2PAoSw2W1gNt8hAakEnzwN" />
+  <component name="ProjectId" id="1TDIQ9eMIvuazwCk52tyXNGEjCS" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
-    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../i2c" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/_old" />
-      <recent name="$PROJECT_DIR$/tools" />
-    </key>
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -64,254 +44,18 @@
       </list>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <module name="aas-low-level" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="sftp://pi@192.168.1.150:22/home/pi/python-sudo.sh" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/glass-control.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="low-level-spi" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
-      <module name="aas-low-level" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/low-level-spi.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="1f56f8bf-97a7-4e83-9cd2-fd882c25f160" name="Default Changelist" comment="" />
-      <created>1553425343455</created>
+      <changelist id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="" />
+      <created>1572988220995</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1553425343455</updated>
-      <workItem from="1553430966590" duration="4933000" />
-      <workItem from="1553441361696" duration="4067000" />
-      <workItem from="1553445520752" duration="12183000" />
-      <workItem from="1569435261144" duration="1574000" />
-      <workItem from="1570367198467" duration="4802000" />
-      <workItem from="1570372466537" duration="1189000" />
-      <workItem from="1570373939700" duration="2832000" />
-      <workItem from="1572378554022" duration="1539000" />
-      <workItem from="1572380480878" duration="385000" />
-      <workItem from="1572382174686" duration="330000" />
-      <workItem from="1572510074373" duration="657000" />
-      <workItem from="1572511701614" duration="334000" />
-      <workItem from="1572809209152" duration="1826000" />
-      <workItem from="1572811992504" duration="2951000" />
-      <workItem from="1572879452974" duration="94000" />
+      <updated>1572988220995</updated>
+      <workItem from="1572988225892" duration="69000" />
     </task>
-    <task id="LOCAL-00001" summary="Refactor of MFRC522 lib">
-      <created>1553432953837</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1553432953838</updated>
-    </task>
-    <task id="LOCAL-00002" summary="Refactoring according PEP 8 rules">
-      <created>1553433378552</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1553433378552</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Add requirements.txt">
-      <created>1553433707245</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1553433707245</updated>
-    </task>
-    <task id="LOCAL-00004" summary="Create nanopispi lib, move there spi functionality">
-      <created>1553451312950</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1553451312950</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Add APA102 led support">
-      <created>1553457076863</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1553457076863</updated>
-    </task>
-    <task id="LOCAL-00006" summary="Add software timer">
-      <created>1553457775948</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1553457775948</updated>
-    </task>
-    <task id="LOCAL-00007" summary="Use software timer for LEDs on when tag is detected">
-      <created>1553457817018</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1553457817018</updated>
-    </task>
-    <task id="LOCAL-00008" summary="Add mosquito">
-      <created>1553458419971</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1553458419971</updated>
-    </task>
-    <task id="LOCAL-00009" summary="Update requirements.txt">
-      <created>1553458497119</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1553458497119</updated>
-    </task>
-    <task id="LOCAL-00010" summary="Refactoring">
-      <created>1553460432494</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1553460432494</updated>
-    </task>
-    <task id="LOCAL-00011" summary="Project reorganization and refactoring">
-      <created>1570371543683</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1570371543683</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Project reorganization and refactoring">
-      <created>1570372490417</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1570372490417</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Update path of log file">
-      <created>1570373524427</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1570373524427</updated>
-    </task>
-    <task id="LOCAL-00014" summary="Add run.sh script">
-      <created>1570373617732</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1570373617732</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Update README.md">
-      <created>1570373628020</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1570373628020</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Update README.md">
-      <created>1570374006478</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1570374006478</updated>
-    </task>
-    <task id="LOCAL-00017" summary="Update install.sh">
-      <created>1570374081781</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1570374081781</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Update log file path and shell scripts">
-      <created>1570374686801</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1570374686801</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Update README.md">
-      <created>1570374783131</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1570374783131</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Add shutdown handler, add timestamp to mqtt message">
-      <created>1570376209412</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1570376209412</updated>
-    </task>
-    <task id="LOCAL-00021" summary="APA102: refactoring">
-      <created>1572378783061</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1572378783061</updated>
-    </task>
-    <task id="LOCAL-00022" summary="MQTT: receive msg from broker">
-      <created>1572379462551</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1572379462551</updated>
-    </task>
-    <task id="LOCAL-00023" summary="nanopi-spi: remove no_cs flag">
-      <created>1572810290730</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1572810290737</updated>
-    </task>
-    <task id="LOCAL-00024" summary="mrfc522: reformat of ultralight dump">
-      <created>1572814847667</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1572814847667</updated>
-    </task>
-    <task id="LOCAL-00025" summary="data-write: allow write data to tag">
-      <created>1572814882996</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1572814882996</updated>
-    </task>
-    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -322,44 +66,10 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <ignored-roots>
-      <path value="$PROJECT_DIR$" />
-    </ignored-roots>
-    <MESSAGE value="Refactor of MFRC522 lib" />
-    <MESSAGE value="Refactoring according PEP 8 rules" />
-    <MESSAGE value="Add requirements.txt" />
-    <MESSAGE value="Create nanopispi lib, move there spi functionality" />
-    <MESSAGE value="Add APA102 led support" />
-    <MESSAGE value="Add software timer" />
-    <MESSAGE value="Use software timer for LEDs on when tag is detected" />
-    <MESSAGE value="Add mosquito" />
-    <MESSAGE value="Update requirements.txt" />
-    <MESSAGE value="Refactoring" />
-    <MESSAGE value="Project reorganization and refactoring" />
-    <MESSAGE value="Update path of log file" />
-    <MESSAGE value="Add run.sh script" />
-    <MESSAGE value="Update install.sh" />
-    <MESSAGE value="Update log file path and shell scripts" />
-    <MESSAGE value="Update README.md" />
-    <MESSAGE value="Add shutdown handler, add timestamp to mqtt message" />
-    <MESSAGE value="APA102: refactoring" />
-    <MESSAGE value="MQTT: receive msg from broker" />
-    <MESSAGE value="nanopi-spi: remove no_cs flag" />
-    <MESSAGE value="mrfc522: reformat of ultralight dump" />
-    <MESSAGE value="data-write: allow write data to tag" />
-    <option name="LAST_COMMIT_MESSAGE" value="data-write: allow write data to tag" />
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/aas_low_level$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1572814725391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/aas_glass_control$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1570372148715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

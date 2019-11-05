@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/aas-low-level.iml" filepath="$PROJECT_DIR$/.idea/aas-low-level.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../i2c/.idea/i2c.iml" filepath="$PROJECT_DIR$/../i2c/.idea/i2c.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/spi.iml" filepath="$PROJECT_DIR$/.idea/spi.iml" />
     </modules>
   </component>
 </project>
