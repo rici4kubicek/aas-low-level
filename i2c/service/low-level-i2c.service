@@ -1,0 +1,15 @@
+[Unit]
+Description=Low level API for I2C peripherals
+Wants=network.target
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/aas-low-level/i2c
+ExecStartPre=/bin/sh -c 'until ping -c1 google.com; do sleep 1; done;
+ExecStart=/usr/bin/sudo /usr/bin/python /home/pi/aas-low-level/i2c/low-level-i2c.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
