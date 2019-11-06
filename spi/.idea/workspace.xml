@@ -2,19 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../i2c/.idea/deployment.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../i2c/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../i2c/.idea/i2c.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../i2c/.idea/i2c.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../i2c/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../i2c/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/aas-low-level.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/remote-mappings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/low-level-spi.py" beforeDir="false" afterPath="$PROJECT_DIR$/low-level-spi.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -55,6 +45,7 @@
       <option name="presentableId" value="Default" />
       <updated>1572988220995</updated>
       <workItem from="1572988225892" duration="69000" />
+      <workItem from="1573072837395" duration="30000" />
     </task>
     <servers />
   </component>
@@ -66,7 +57,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

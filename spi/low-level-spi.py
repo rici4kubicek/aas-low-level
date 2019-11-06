@@ -99,7 +99,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     aas.logger = logging.getLogger(__name__)
     try:
-        handler = logging.handlers.RotatingFileHandler("home/pi/aas-low-level/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
+        handler = logging.handlers.RotatingFileHandler("home/pi/aas-low-level/spi/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
     except:
         handler = logging.handlers.RotatingFileHandler("log/low-level-spi.txt", maxBytes=100000,
                                                        backupCount=10)
