@@ -3,7 +3,7 @@
 ## Stage 1
 **Read UID and data from tag and send it throw mqtt to local broker**
 ### Note
-**It is necessary to place whole repository to directory /home/pi/aas-low-level**
+**It is necessary to place whole repository to directory /home/pi/aas-low-level/spi**
 ### Preparation
 * run bash script _install.sh_
     * this script install necessary parts include mqtt broker, mqtt clients, pip, python libraries
