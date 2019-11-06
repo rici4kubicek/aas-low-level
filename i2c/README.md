@@ -1,6 +1,7 @@
 # aas-low-level i2c
 
 ## Script installation
+* run `install.sh`
 * copy file `low-level-i2c.service` from directory `service` to directory  `/lib/systemd/system`
 * run `systemctl enable low-level-i2c.service`
 * go through the guide with your username and password
