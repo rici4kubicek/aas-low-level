@@ -18,7 +18,7 @@
     * `spi/reader` - general, text oriented information from reader
     * `spi/reader/data/read` - data read from tag in json format
 #### Structure of _json_ message in `spi/reader/data/read` topic
-* array `data` with 16 sub-arrays with 16 bytes
+* array `data` with 16 (or other count, based on tags memory size) sub-arrays with 4 bytes
 * array `uid` with 5 bytes
 * number `timestamp` with timestamp of rfid tag attached event
 
