@@ -5,4 +5,8 @@ cd
 git clone https://github.com/python-pillow/Pillow.git
 cd
 cd Pillow
-sudo python setup.py install
+sudo python3 setup.py install
+cd
+sudo rm -r Pillow
+cd aas-low-level/i2c
+sudo pip3 install -r requirements.txt
