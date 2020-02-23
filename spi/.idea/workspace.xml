@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,22 +12,16 @@
   </component>
   <component name="ProjectId" id="1TDIQ9eMIvuazwCk52tyXNGEjCS" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -42,6 +35,7 @@
       <updated>1572988220995</updated>
       <workItem from="1572988225892" duration="69000" />
       <workItem from="1573072837395" duration="106000" />
+      <workItem from="1581931233898" duration="105000" />
     </task>
     <task id="LOCAL-00001" summary="spi: update script path">
       <created>1573072909839</created>
@@ -80,5 +74,11 @@
     <MESSAGE value="spi: update script path" />
     <MESSAGE value="Update README.md" />
     <option name="LAST_COMMIT_MESSAGE" value="Update README.md" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2663" y="280" width="432" height="487" key="FileChooserDialogImpl" timestamp="1581931339112">
+      <screen x="1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2663" y="280" width="432" height="487" key="FileChooserDialogImpl/0.140.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1581931339112" />
   </component>
 </project>

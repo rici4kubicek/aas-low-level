@@ -72,7 +72,7 @@ def on_write(moqs, obj, msg):
 
 def on_connect(mqtt_client, obj, flags, rc):
     global mqtt_ready
-    if rc==0:
+    if rc == 0:
         obj.logger.info("MQTT: Connected ")
         mqtt_ready = 1
         mqttc.subscribe(LL_LED_TOPIC)
@@ -87,7 +87,7 @@ def on_connect(mqtt_client, obj, flags, rc):
                 rc = mqtt_client.reconnect()
             except Exception as e:
                 obj.logger.error("MQTT: Connection request error (Code: {c}, Message: {m})!"
-                    .format(c=type(e).__name__, m=str(e)))
+                                 .format(c=type(e).__name__, m=str(e)))
                 rc = 1
                 retry_time = 10  # probably wifi/internet problem so slow down the reconnect periode
 
@@ -99,10 +99,9 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     aas.logger = logging.getLogger(__name__)
     try:
-        handler = logging.handlers.RotatingFileHandler("home/pi/aas-low-level/spi/log/low-level-spi.txt", maxBytes=100000, backupCount=10)
+        handler = logging.handlers.RotatingFileHandler("low-level-spi.txt", maxBytes=100000)
     except:
-        handler = logging.handlers.RotatingFileHandler("log/low-level-spi.txt", maxBytes=100000,
-                                                       backupCount=10)
+        handler = logging.handlers.RotatingFileHandler("low-level-spi.txt", maxBytes=100000)
 
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(formatter)
