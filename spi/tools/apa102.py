@@ -19,13 +19,13 @@ class APA102(object):
 
     def prepare_data(self, r, g, b, brightness, led_idx):
         _brightness = valmap(brightness, 0, 100, 0, 31)
-        self._led_array[led_idx * 4 + 4] = 0xe0 + _brightness
+        self._led_array[led_idx * 4 + 4] = int(0xe0 + _brightness)
         r = valmap(r, 0, 255, 0, 255)
         g = valmap(g, 0, 255, 0, 255)
         b = valmap(b, 0, 255, 0, 255)
-        self._led_array[led_idx * 4 + 5] = b
-        self._led_array[led_idx * 4 + 6] = g
-        self._led_array[led_idx * 4 + 7] = r
+        self._led_array[led_idx * 4 + 5] = int(b)
+        self._led_array[led_idx * 4 + 6] = int(g)
+        self._led_array[led_idx * 4 + 7] = int(r)
 
     def get_data(self):
         return self._led_array

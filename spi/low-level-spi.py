@@ -40,10 +40,10 @@ class AasSpi(object):
 
 
 def on_leds(moqs, obj, msg):
-    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload))
+    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
 
     try:
-        data = json.loads(msg.payload)
+        data = json.loads(msg.payload.decode("utf-8"))
         obj.led.prepare_data(data["led_0"]["red"], data["led_0"]["green"], data["led_0"]["blue"],
                              data["led_0"]["brightness"], 0)
         obj.led.prepare_data(data["led_1"]["red"], data["led_1"]["green"], data["led_1"]["blue"],
@@ -58,10 +58,10 @@ def on_leds(moqs, obj, msg):
 
 
 def on_write(moqs, obj, msg):
-    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload))
+    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
 
     try:
-        data = json.loads(msg.payload)
+        data = json.loads(msg.payload.decode("utf-8"))
         obj.write_data["sector"] = data["sector"]
         obj.write_data["data"] = data["data"]
         obj.logger.debug(obj.write_data)
