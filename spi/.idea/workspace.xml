@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="" />
+    <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,7 +21,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../i2c" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
@@ -36,6 +38,7 @@
       <workItem from="1572988225892" duration="69000" />
       <workItem from="1573072837395" duration="106000" />
       <workItem from="1581931233898" duration="105000" />
+      <workItem from="1582488028996" duration="278000" />
     </task>
     <task id="LOCAL-00001" summary="spi: update script path">
       <created>1573072909839</created>
@@ -51,7 +54,14 @@
       <option name="project" value="LOCAL" />
       <updated>1573072941872</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Refactoring">
+      <created>1582488112610</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1582488112610</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -73,12 +83,18 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="spi: update script path" />
     <MESSAGE value="Update README.md" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update README.md" />
+    <MESSAGE value="Refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2663" y="280" width="432" height="487" key="FileChooserDialogImpl" timestamp="1581931339112">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="558" y="107" key="CommitChangelistDialog2" timestamp="1582488112018">
+      <screen x="0" y="0" width="1920" height="1044" />
+    </state>
+    <state x="558" y="107" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582488112018" />
+    <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl" timestamp="1582488296049">
+      <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="2663" y="280" width="432" height="487" key="FileChooserDialogImpl/0.140.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1581931339112" />
+    <state x="743" y="271" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582488296049" />
   </component>
 </project>

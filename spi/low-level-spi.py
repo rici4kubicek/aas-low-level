@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
     aas = AasSpi()
 
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.ERROR)
     aas.logger = logging.getLogger(__name__)
     try:
         handler = logging.handlers.RotatingFileHandler("low-level-spi.txt", maxBytes=100000)
