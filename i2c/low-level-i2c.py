@@ -73,7 +73,7 @@ class AasI2C(object):
 
 def on_display(moqs, obj, msg):
     try:
-        data = json.loads(msg.payload)
+        data = json.loads(msg.payload.decode("utf-8"))
 
         if 'cmd' in data.keys():
             if data["cmd"] == "clear":
@@ -132,7 +132,9 @@ if __name__ == "__main__":
     cmd = "hostname -I | cut -d\' \' -f1"
     IP = subprocess.check_output(cmd, shell=True)
 
-    aas.draw.text((2, 10), "IP: " + str(IP), font=aas.fonts["Arial-12"], fill=255)
+    txt = u"IP: " + str(IP, "ascii") + ""
+
+    aas.draw.text((2, 10), txt, font=aas.fonts["Arial-12"], fill=255)
 
     aas.display.image(aas.image)
     aas.send_to_display()
