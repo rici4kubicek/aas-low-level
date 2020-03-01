@@ -518,6 +518,29 @@ class MFRC522(object):
             i = i + 1
         return data
 
+    def get_version(self):
+        data = {"header": 0, "vendor_id": 0, "product_type": 0, "product_subtype": 0, "major_product_version": 0, "minor_product_version": 0, "storage_size": 0, "protocol_type": 0}
+        recv_data = []
+        recv_data.append(self.PICC_AUTHENT1A)
+        pOut = self.calculate_crc(recv_data)
+        recv_data.append(pOut[0])
+        recv_data.append(pOut[1])
+
+        (status, backData, backLen) = self.to_card(self.PCD_TRANSCEIVE, recv_data)
+
+        if status == self.MI_OK:
+            if len(backData) == 8:
+                data["header"] = backData[0]
+                data["vendor_id"] = backData[1]
+                data["product_type"] = backData[2]
+                data["product_subtype"] = backData[3]
+                data["major_product_version"] = backData[4]
+                data["minor_product_version"] = backData[5]
+                data["storage_size"] = backData[6]
+                data["protocol_type"] = backData[7]
+
+        return data
+
     def init(self):
 
         # io.digitalWrite(0, io.HIGH)

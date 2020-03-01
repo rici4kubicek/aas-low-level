@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/low-level-spi.py" beforeDir="false" afterPath="$PROJECT_DIR$/low-level-spi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tools/mfrc522.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/mfrc522.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -67,7 +68,7 @@
       <workItem from="1582488028996" duration="2091000" />
       <workItem from="1582495114821" duration="812000" />
       <workItem from="1582626685604" duration="13000" />
-      <workItem from="1583091239522" duration="25000" />
+      <workItem from="1583091239522" duration="2311000" />
     </task>
     <task id="LOCAL-00001" summary="spi: update script path">
       <created>1573072909839</created>
@@ -125,7 +126,14 @@
       <option name="project" value="LOCAL" />
       <updated>1582495779318</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="MFRC522 module: update line end">
+      <created>1583091333075</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1583091333075</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,7 +161,8 @@
     <MESSAGE value="Update .gitignore" />
     <MESSAGE value="Update install.sh" />
     <MESSAGE value="Repair message encoding" />
-    <option name="LAST_COMMIT_MESSAGE" value="Repair message encoding" />
+    <MESSAGE value="MFRC522 module: update line end" />
+    <option name="LAST_COMMIT_MESSAGE" value="MFRC522 module: update line end" />
   </component>
   <component name="WindowStateProjectService">
     <state x="556" y="182" key="#Deployment" timestamp="1582495378317">
@@ -168,9 +177,10 @@
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="419" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495229705" />
-    <state x="558" y="107" key="CommitChangelistDialog2" timestamp="1582495779128">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state x="2478" y="111" key="CommitChangelistDialog2" timestamp="1583091332673">
+      <screen x="1920" y="0" width="1920" height="1080" />
     </state>
+    <state x="2478" y="111" key="CommitChangelistDialog2/0.0.1920.1044/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583091332673" />
     <state x="558" y="107" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495779128" />
     <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl" timestamp="1582626696299">
       <screen x="0" y="0" width="1920" height="1044" />

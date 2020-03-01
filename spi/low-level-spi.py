@@ -92,6 +92,28 @@ def on_connect(mqtt_client, obj, flags, rc):
                 retry_time = 10  # probably wifi/internet problem so slow down the reconnect periode
 
 
+def tag_type_string(storage_size):
+    if storage_size == 0x0f:
+        return "NTAG213"
+    elif storage_size == 0x11:
+        return "NTAG215"
+    elif storage_size == 0x13:
+        return "NTAG216"
+    else:
+        return "Unknown"
+
+
+def tag_memory_size(storage_size):
+    if storage_size == 0x0f:
+        return 144
+    elif storage_size == 0x11:
+        return 504
+    elif storage_size == 0x13:
+        return 888
+    else:
+        return 144
+
+
 if __name__ == "__main__":
 
     aas = AasSpi()
@@ -167,6 +189,9 @@ if __name__ == "__main__":
             card_data["uid"] = uid
             MIFAREReader.select_tag(uid)
             card_data["data"] = MIFAREReader.dump_ultralight(uid)
+            data = MIFAREReader.get_version()
+            card_data["tag_type"] = tag_type_string(data["storage_size"])
+            card_data["tag_size"] = tag_memory_size(data["storage_size"])
 
             if aas.write_data_flag:
                 aas.logger.debug(
