@@ -473,7 +473,7 @@ class MFRC522(object):
                 b.append(item)
             Logger.debug("Sector " + str(block_addr) + " " + str(b))
             data = b
-        return data
+        return data, status
 
     def write(self, block_addr, write_data):
         buff = []
@@ -509,14 +509,18 @@ class MFRC522(object):
         while i < 45:
             j = 0
             rd = []
-            readed = self.read(i)
-            if len(readed) == 16:
-                while j < 4:
-                    rd.append(readed[j])
-                    j = j + 1
-            data.append(rd)
-            i = i + 1
-        return data
+            readed, status = self.read(i)
+            if status == self.MI_OK:
+                if len(readed) == 16:
+                    while j < 4:
+                        rd.append(readed[j])
+                        j = j + 1
+                data.append(rd)
+                i = i + 1
+            else:
+                data = []
+                return data, status
+        return data, status
 
     def get_version(self):
         data = {"header": 0, "vendor_id": 0, "product_type": 0, "product_subtype": 0, "major_product_version": 0, "minor_product_version": 0, "storage_size": 0, "protocol_type": 0}

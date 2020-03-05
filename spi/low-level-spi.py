@@ -206,7 +206,11 @@ if __name__ == "__main__":
             # place read uid to dict
             card_data["uid"] = uid
             MIFAREReader.select_tag(uid)
-            card_data["data"] = MIFAREReader.dump_ultralight(uid)
+            card_data["data"], state = MIFAREReader.dump_ultralight(uid)
+            if state == MIFAREReader.MI_OK:
+                card_data["read_state"] = "OK"
+            else:
+                card_data["read_state"] = "ERROR"
             data = MIFAREReader.get_version()
             card_data["tag"] = tag_parse_version(data)
 
