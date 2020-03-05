@@ -529,7 +529,7 @@ class MFRC522(object):
         (status, backData, backLen) = self.to_card(self.PCD_TRANSCEIVE, recv_data)
 
         if status == self.MI_OK:
-            if len(backData) == 8:
+            if backLen == 80:
                 data["header"] = backData[0]
                 data["vendor_id"] = backData[1]
                 data["product_type"] = backData[2]
@@ -538,7 +538,6 @@ class MFRC522(object):
                 data["minor_product_version"] = backData[5]
                 data["storage_size"] = backData[6]
                 data["protocol_type"] = backData[7]
-
         return data
 
     def init(self):

@@ -92,7 +92,7 @@ def on_connect(mqtt_client, obj, flags, rc):
                 retry_time = 10  # probably wifi/internet problem so slow down the reconnect periode
 
 
-def tag_type_string(storage_size):
+def _tag_type_string(storage_size):
     if storage_size == 0x0f:
         return "NTAG213"
     elif storage_size == 0x11:
@@ -103,7 +103,7 @@ def tag_type_string(storage_size):
         return "Unknown"
 
 
-def tag_memory_size(storage_size):
+def _tag_memory_size(storage_size):
     if storage_size == 0x0f:
         return 144
     elif storage_size == 0x11:
@@ -111,7 +111,25 @@ def tag_memory_size(storage_size):
     elif storage_size == 0x13:
         return 888
     else:
-        return 144
+        return 0
+
+
+def _tag_vendor_to_string(vendor_id):
+    if vendor_id == 4:
+        return "NXP"
+    else:
+        return "Unknown"
+
+
+def _tag_user_memory_offset(data):
+    return 4
+
+
+def tag_parse_version(data):
+    back_data = {"tag_size": _tag_memory_size(data["storage_size"]), "tag_type": _tag_type_string(data["storage_size"]),
+                 "tag_vendor": _tag_vendor_to_string(data["vendor_id"]), "tag_protocol": data["protocol_type"],
+                 "user_memory_offset": _tag_user_memory_offset(data)}
+    return back_data
 
 
 if __name__ == "__main__":
@@ -190,8 +208,7 @@ if __name__ == "__main__":
             MIFAREReader.select_tag(uid)
             card_data["data"] = MIFAREReader.dump_ultralight(uid)
             data = MIFAREReader.get_version()
-            card_data["tag_type"] = tag_type_string(data["storage_size"])
-            card_data["tag_size"] = tag_memory_size(data["storage_size"])
+            card_data["tag"] = tag_parse_version(data)
 
             if aas.write_data_flag:
                 aas.logger.debug(

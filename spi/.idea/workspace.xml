@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/low-level-spi.py" beforeDir="false" afterPath="$PROJECT_DIR$/low-level-spi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tools/mfrc522.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/mfrc522.py" afterDir="false" />
@@ -23,6 +24,11 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.mappings" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.highlight.symlinks" value="true" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
+    <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -36,7 +42,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="sftp://pi@192.168.0.194:22/usr/bin/python3" />
+      <option name="SDK_HOME" value="sftp://pi@192.168.5.28:22/usr/bin/python3" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -68,7 +74,9 @@
       <workItem from="1582488028996" duration="2091000" />
       <workItem from="1582495114821" duration="812000" />
       <workItem from="1582626685604" duration="13000" />
-      <workItem from="1583091239522" duration="2311000" />
+      <workItem from="1583091239522" duration="2392000" />
+      <workItem from="1583127819995" duration="46000" />
+      <workItem from="1583419236784" duration="2931000" />
     </task>
     <task id="LOCAL-00001" summary="spi: update script path">
       <created>1573072909839</created>
@@ -133,7 +141,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583091333075</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="MFRC522: command to get information from tag">
+      <created>1583093626376</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1583093626377</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,57 +177,77 @@
     <MESSAGE value="Update install.sh" />
     <MESSAGE value="Repair message encoding" />
     <MESSAGE value="MFRC522 module: update line end" />
-    <option name="LAST_COMMIT_MESSAGE" value="MFRC522 module: update line end" />
+    <MESSAGE value="MFRC522: command to get information from tag" />
+    <option name="LAST_COMMIT_MESSAGE" value="MFRC522: command to get information from tag" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="556" y="182" key="#Deployment" timestamp="1582495378317">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state x="741" y="246" key="#Deployment" timestamp="1583423007292">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state x="556" y="182" key="#Deployment/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495378317" />
-    <state x="556" y="182" key="#Options" timestamp="1582495387300">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state x="741" y="246" key="#Deployment/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583423007292" />
+    <state x="741" y="246" key="#Options" timestamp="1583423025403">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state x="556" y="182" key="#Options/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495387300" />
-    <state x="419" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1582495229705">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state x="741" y="246" key="#Options/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583423025403" />
+    <state x="559" y="240" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1583423072708">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state x="419" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495229705" />
-    <state x="2478" y="111" key="CommitChangelistDialog2" timestamp="1583091332673">
+    <state x="559" y="240" key="#com.intellij.execution.impl.EditConfigurationsDialog/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583423072708" />
+    <state x="2478" y="111" key="CommitChangelistDialog2" timestamp="1583093626164">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
-    <state x="2478" y="111" key="CommitChangelistDialog2/0.0.1920.1044/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583091332673" />
+    <state x="2478" y="111" key="CommitChangelistDialog2/0.0.1920.1044/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583093626164" />
     <state x="558" y="107" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495779128" />
-    <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl" timestamp="1582626696299">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state x="2108" y="92" key="DiffContextDialog" timestamp="1583093588912">
+      <screen x="1920" y="0" width="1920" height="1080" />
     </state>
+    <state x="2108" y="92" key="DiffContextDialog/0.0.1920.1044/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583093588912" />
+    <state x="100" y="100" width="2360" height="1210" key="DirDiffDialog" timestamp="1583422938335">
+      <screen x="0" y="0" width="2560" height="1410" />
+    </state>
+    <state x="100" y="100" width="2360" height="1210" key="DirDiffDialog/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583422938335" />
+    <state x="991" y="366" width="432" height="487" key="FileChooserDialogImpl" timestamp="1583419648090">
+      <screen x="0" y="0" width="2560" height="1410" />
+    </state>
+    <state x="2663" y="280" key="FileChooserDialogImpl/0.0.1920.1044/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583127864431" />
     <state x="2663" y="280" width="432" height="487" key="FileChooserDialogImpl/0.140.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1581931339112" />
     <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582626696299" />
-    <state width="1920" height="282" key="GridCell.Tab.0.bottom" timestamp="1582495926459">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state x="991" y="366" key="FileChooserDialogImpl/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583419648090" />
+    <state width="2560" height="402" key="GridCell.Tab.0.bottom" timestamp="1583424649654">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state width="1920" height="282" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495926459" />
-    <state width="1920" height="282" key="GridCell.Tab.0.center" timestamp="1582495926459">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state width="2560" height="402" key="GridCell.Tab.0.bottom/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583424649654" />
+    <state width="2560" height="402" key="GridCell.Tab.0.center" timestamp="1583424649654">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state width="1920" height="282" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495926459" />
-    <state width="1920" height="282" key="GridCell.Tab.0.left" timestamp="1582495926459">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state width="2560" height="402" key="GridCell.Tab.0.center/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583424649654" />
+    <state width="2560" height="402" key="GridCell.Tab.0.left" timestamp="1583424649654">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state width="1920" height="282" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495926459" />
-    <state width="1920" height="282" key="GridCell.Tab.0.right" timestamp="1582495926459">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state width="2560" height="402" key="GridCell.Tab.0.left/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583424649654" />
+    <state width="2560" height="402" key="GridCell.Tab.0.right" timestamp="1583424649654">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state width="1920" height="282" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495926459" />
-    <state x="457" y="155" key="SettingsEditor" timestamp="1582495191242">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state width="2560" height="402" key="GridCell.Tab.0.right/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583424649654" />
+    <state x="609" y="209" width="1007" height="733" key="SettingsEditor" timestamp="1583422897668">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state x="457" y="155" key="SettingsEditor/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495191242" />
-    <state x="862" y="244" key="ftp.server.browser" timestamp="1582495181241">
-      <screen x="0" y="0" width="1920" height="1044" />
+    <state x="609" y="209" width="1007" height="733" key="SettingsEditor/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583422897668" />
+    <state x="1149" y="330" key="ftp.server.browser" timestamp="1583422867132">
+      <screen x="0" y="0" width="2560" height="1410" />
     </state>
     <state x="862" y="244" key="ftp.server.browser/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495181241" />
+    <state x="1149" y="330" key="ftp.server.browser/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583422867132" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/spi$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1582495827700" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spi$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1583424649560" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
