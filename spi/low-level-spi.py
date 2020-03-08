@@ -156,7 +156,7 @@ if __name__ == "__main__":
     aas.nanopi = NanoPiSpi()
     aas.nanopi.led_cs_init()
     aas.nanopi.led_cs_set(1)
-    aas.nanopi.open(0, 0, 100000)
+    aas.nanopi.open(0, 0, 2000000)
 
     aas.led = APA102(4)
 

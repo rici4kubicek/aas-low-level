@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tools/mfrc522.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/mfrc522.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/low-level-spi.py" beforeDir="false" afterPath="$PROJECT_DIR$/low-level-spi.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +78,7 @@
       <workItem from="1583501860478" duration="19000" />
       <workItem from="1583575683160" duration="1949000" />
       <workItem from="1583606293559" duration="39000" />
-      <workItem from="1583687016786" duration="344000" />
+      <workItem from="1583687016786" duration="628000" />
     </task>
     <task id="LOCAL-00001" summary="spi: update script path">
       <created>1573072909839</created>
@@ -164,7 +164,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583426505454</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Remove some semicolons">
+      <created>1583687377059</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1583687377059</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -196,19 +203,20 @@
     <MESSAGE value="MFRC522: command to get information from tag" />
     <MESSAGE value="MFRC522: process information from GET_VERSION command" />
     <MESSAGE value="Refactoring read data msg structure" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactoring read data msg structure" />
+    <MESSAGE value="Remove some semicolons" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove some semicolons" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="556" y="182" key="#Deployment" timestamp="1583687054153">
+    <state x="556" y="182" key="#Deployment" timestamp="1583687523651">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="556" y="182" key="#Deployment/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583575716391" />
-    <state x="556" y="182" key="#Deployment/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687054153" />
+    <state x="556" y="182" key="#Deployment/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687523651" />
     <state x="741" y="246" key="#Deployment/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583423007292" />
-    <state x="741" y="246" key="#Options" timestamp="1583423025403">
-      <screen x="0" y="0" width="2560" height="1410" />
+    <state x="556" y="182" key="#Options" timestamp="1583687531478">
+      <screen x="0" y="0" width="1920" height="1044" />
     </state>
-    <state x="556" y="182" key="#Options/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495387300" />
+    <state x="556" y="182" key="#Options/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687531478" />
     <state x="741" y="246" key="#Options/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583423025403" />
     <state x="419" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1583687025406">
       <screen x="0" y="0" width="1920" height="1044" />
@@ -216,11 +224,11 @@
     <state x="419" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583575691613" />
     <state x="419" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687025406" />
     <state x="559" y="240" key="#com.intellij.execution.impl.EditConfigurationsDialog/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583423072708" />
-    <state x="744" y="145" key="CommitChangelistDialog2" timestamp="1583426505160">
-      <screen x="0" y="0" width="2560" height="1410" />
+    <state x="558" y="107" key="CommitChangelistDialog2" timestamp="1583687376674">
+      <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="2478" y="111" key="CommitChangelistDialog2/0.0.1920.1044/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583093626164" />
-    <state x="558" y="107" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1582495779128" />
+    <state x="558" y="107" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687376674" />
     <state x="744" y="145" key="CommitChangelistDialog2/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426505160" />
     <state x="2108" y="92" key="DiffContextDialog" timestamp="1583093588912">
       <screen x="1920" y="0" width="1920" height="1080" />
@@ -237,29 +245,29 @@
     <state x="2663" y="280" width="432" height="487" key="FileChooserDialogImpl/0.140.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1581931339112" />
     <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583501877488" />
     <state x="991" y="366" width="432" height="487" key="FileChooserDialogImpl/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583606330745" />
-    <state width="1920" height="281" key="GridCell.Tab.0.bottom" timestamp="1583687166251">
+    <state width="1920" height="281" key="GridCell.Tab.0.bottom" timestamp="1583687646292">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state width="1920" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583578531939" />
-    <state width="1920" height="281" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687166251" />
+    <state width="1920" height="281" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687646292" />
     <state width="2560" height="402" key="GridCell.Tab.0.bottom/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426515473" />
-    <state width="1920" height="281" key="GridCell.Tab.0.center" timestamp="1583687166251">
+    <state width="1920" height="281" key="GridCell.Tab.0.center" timestamp="1583687646292">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state width="1920" height="281" key="GridCell.Tab.0.center/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583578531939" />
-    <state width="1920" height="281" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687166251" />
+    <state width="1920" height="281" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687646292" />
     <state width="2560" height="402" key="GridCell.Tab.0.center/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426515472" />
-    <state width="1920" height="281" key="GridCell.Tab.0.left" timestamp="1583687166250">
+    <state width="1920" height="281" key="GridCell.Tab.0.left" timestamp="1583687646292">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state width="1920" height="281" key="GridCell.Tab.0.left/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583578531938" />
-    <state width="1920" height="281" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687166250" />
+    <state width="1920" height="281" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687646292" />
     <state width="2560" height="402" key="GridCell.Tab.0.left/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426515472" />
-    <state width="1920" height="281" key="GridCell.Tab.0.right" timestamp="1583687166251">
+    <state width="1920" height="281" key="GridCell.Tab.0.right" timestamp="1583687646292">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state width="1920" height="281" key="GridCell.Tab.0.right/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583578531939" />
-    <state width="1920" height="281" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687166251" />
+    <state width="1920" height="281" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687646292" />
     <state width="2560" height="402" key="GridCell.Tab.0.right/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426515473" />
     <state x="609" y="209" width="1007" height="733" key="SettingsEditor" timestamp="1583422897668">
       <screen x="0" y="0" width="2560" height="1410" />
@@ -277,6 +285,6 @@
     <state x="1149" y="330" key="ftp.server.browser/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583422867132" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/spi$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1583687166232" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spi$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1583687646254" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
