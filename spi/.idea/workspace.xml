@@ -80,7 +80,7 @@
       <workItem from="1583575683160" duration="1949000" />
       <workItem from="1583606293559" duration="39000" />
       <workItem from="1583687016786" duration="3054000" />
-      <workItem from="1583690865227" duration="2558000" />
+      <workItem from="1583690865227" duration="8756000" />
     </task>
     <task id="LOCAL-00001" summary="spi: update script path">
       <created>1573072909839</created>
@@ -187,7 +187,14 @@
       <option name="project" value="LOCAL" />
       <updated>1583689738758</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Refactoring">
+      <created>1583693440405</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1583693440405</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -209,7 +216,6 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="spi: update script path" />
     <MESSAGE value="Update README.md" />
-    <MESSAGE value="Refactoring" />
     <MESSAGE value="Change logger level to error" />
     <MESSAGE value="Add .gitignore" />
     <MESSAGE value="Update .gitignore" />
@@ -222,7 +228,8 @@
     <MESSAGE value="Remove some semicolons" />
     <MESSAGE value="Increase SPI speed to 2MHz" />
     <MESSAGE value="Properly parse UID" />
-    <option name="LAST_COMMIT_MESSAGE" value="Properly parse UID" />
+    <MESSAGE value="Refactoring" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring" />
   </component>
   <component name="WindowStateProjectService">
     <state x="556" y="182" key="#Deployment" timestamp="1583687523651">
@@ -242,11 +249,11 @@
     <state x="419" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583575691613" />
     <state x="419" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583687025406" />
     <state x="559" y="240" key="#com.intellij.execution.impl.EditConfigurationsDialog/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583423072708" />
-    <state x="907" y="135" key="CommitChangelistDialog2" timestamp="1583689738621">
+    <state x="907" y="135" width="804" height="830" key="CommitChangelistDialog2" timestamp="1583693440032">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="2478" y="111" key="CommitChangelistDialog2/0.0.1920.1044/1920.0.1920.1080@1920.0.1920.1080" timestamp="1583093626164" />
-    <state x="907" y="135" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583689738621" />
+    <state x="907" y="135" width="804" height="830" key="CommitChangelistDialog2/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583693440032" />
     <state x="744" y="145" key="CommitChangelistDialog2/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426505160" />
     <state x="2108" y="92" key="DiffContextDialog" timestamp="1583093588912">
       <screen x="1920" y="0" width="1920" height="1080" />
@@ -263,29 +270,29 @@
     <state x="2663" y="280" width="432" height="487" key="FileChooserDialogImpl/0.140.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1581931339112" />
     <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583501877488" />
     <state x="991" y="366" width="432" height="487" key="FileChooserDialogImpl/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583606330745" />
-    <state width="1920" height="281" key="GridCell.Tab.0.bottom" timestamp="1583693348119">
+    <state width="1920" height="281" key="GridCell.Tab.0.bottom" timestamp="1583701325087">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state width="1920" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583578531939" />
-    <state width="1920" height="281" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583693348119" />
+    <state width="1920" height="281" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583701325087" />
     <state width="2560" height="402" key="GridCell.Tab.0.bottom/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426515473" />
-    <state width="1920" height="281" key="GridCell.Tab.0.center" timestamp="1583693348117">
+    <state width="1920" height="281" key="GridCell.Tab.0.center" timestamp="1583701325087">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state width="1920" height="281" key="GridCell.Tab.0.center/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583578531939" />
-    <state width="1920" height="281" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583693348117" />
+    <state width="1920" height="281" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583701325087" />
     <state width="2560" height="402" key="GridCell.Tab.0.center/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426515472" />
-    <state width="1920" height="281" key="GridCell.Tab.0.left" timestamp="1583693348117">
+    <state width="1920" height="281" key="GridCell.Tab.0.left" timestamp="1583701325086">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state width="1920" height="281" key="GridCell.Tab.0.left/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583578531938" />
-    <state width="1920" height="281" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583693348117" />
+    <state width="1920" height="281" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583701325086" />
     <state width="2560" height="402" key="GridCell.Tab.0.left/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426515472" />
-    <state width="1920" height="281" key="GridCell.Tab.0.right" timestamp="1583693348117">
+    <state width="1920" height="281" key="GridCell.Tab.0.right" timestamp="1583701325087">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state width="1920" height="281" key="GridCell.Tab.0.right/0.0.1920.1044/1920.0.1920.1080@0.0.1920.1044" timestamp="1583578531939" />
-    <state width="1920" height="281" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583693348117" />
+    <state width="1920" height="281" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1583701325087" />
     <state width="2560" height="402" key="GridCell.Tab.0.right/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583426515473" />
     <state x="609" y="209" width="1007" height="733" key="SettingsEditor" timestamp="1583422897668">
       <screen x="0" y="0" width="2560" height="1410" />
@@ -303,6 +310,6 @@
     <state x="1149" y="330" key="ftp.server.browser/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583422867132" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/spi$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1583693348074" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/spi$low_level_spi.coverage" NAME="low-level-spi Coverage Results" MODIFIED="1583701325057" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

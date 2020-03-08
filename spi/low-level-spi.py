@@ -198,28 +198,41 @@ if __name__ == "__main__":
             card_data["timestamp"] = time.time()
 
         # Get the UID of the card
-        (status, uid) = MIFAREReader.anticoll()
+        (status, uid) = MIFAREReader.anticoll(1)
 
         # If we have the UID, continue
         if status == MIFAREReader.MI_OK:
-            aas.logger.debug("Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
-            MIFAREReader.select_tag(uid)
-            card_data["data"], state = MIFAREReader.dump_ultralight(uid)
-            # properly parse UID from readed data
-            card_data["uid"] = MIFAREReader.parse_serial_number(card_data["data"])
-            if state == MIFAREReader.MI_OK:
-                card_data["read_state"] = "OK"
-            else:
-                card_data["read_state"] = "ERROR"
-            data = MIFAREReader.get_version()
-            card_data["tag"] = tag_parse_version(data)
-            MIFAREReader.stop_crypto1()
+            if not aas.write_data_flag:
+                aas.logger.debug("Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
+                MIFAREReader.select_tag(uid)
+                card_data["data"], state = MIFAREReader.dump_ultralight(uid)
+                # properly parse UID from readed data
+                card_data["uid"] = MIFAREReader.parse_serial_number(card_data["data"])
+                if state == MIFAREReader.MI_OK:
+                    card_data["read_state"] = "OK"
+                else:
+                    card_data["read_state"] = "ERROR"
+                data = MIFAREReader.get_version()
+                card_data["tag"] = tag_parse_version(data)
+            elif aas.write_data_flag:
+                uid[0] = uid[1]
+                uid[1] = uid[2]
+                uid[2] = uid[3]
 
-            if aas.write_data_flag:
+                SAK1 = MIFAREReader.sak(uid)
+
+                (Status, uid2) = MIFAREReader.anticoll(2)
+                uid[3] = uid2[0]
+                uid[4] = uid2[1]
+                uid.append(uid2[2])
+                uid.append(uid2[3])
+                MIFAREReader.select_tag2(uid)
                 aas.logger.debug(
                     "Card UID: {}, {}, {}, {} write data to sector".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
                                                                            hex(uid[3]), aas.write_data["sector"]))
-                MIFAREReader.write(aas.write_data["sector"], aas.write_data["data"])
+                status = MIFAREReader.write(aas.write_data["sector"], aas.write_data["data"])
+                if status == MIFAREReader.MI_OK:
+                    mqttc.publish(LL_READER_TOPIC, "Written successful")
                 aas.write_data_flag = False
 
             MIFAREReader.stop_crypto1()
