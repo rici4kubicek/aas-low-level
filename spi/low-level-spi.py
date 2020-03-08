@@ -203,10 +203,10 @@ if __name__ == "__main__":
         # If we have the UID, continue
         if status == MIFAREReader.MI_OK:
             aas.logger.debug("Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
-            # place read uid to dict
-            card_data["uid"] = uid
             MIFAREReader.select_tag(uid)
             card_data["data"], state = MIFAREReader.dump_ultralight(uid)
+            # properly parse UID from readed data
+            card_data["uid"] = MIFAREReader.parse_serial_number(card_data["data"])
             if state == MIFAREReader.MI_OK:
                 card_data["read_state"] = "OK"
             else:

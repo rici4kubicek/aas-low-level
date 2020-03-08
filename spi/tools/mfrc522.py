@@ -286,6 +286,16 @@ class MFRC522(object):
 
         return status, backData
 
+    def parse_serial_number(self, data):
+        if len(data) > 2:
+            check_byte_0 = 0x88 ^ data[0][0] ^ data[0][1] ^ data[0][2]
+            if data[0][3] == check_byte_0:
+                check_byte_1 = data[1][0] ^ data[1][1] ^ data[1][2] ^ data[1][3]
+                if data[2][0] == check_byte_1:
+                    uid = [data[0][0], data[0][1], data[0][2], data[1][0], data[1][1], data[1][2], data[1][3]]
+                    return uid
+        return []
+
     def sak(self, uid):
 
         ser_num = []
