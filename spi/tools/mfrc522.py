@@ -257,17 +257,13 @@ class MFRC522(object):
 
         return status, backBits
 
-    def anticoll(self, level):
+    def anticoll(self):
         ser_num_check = 0
-
         ser_num = []
 
         self.write_spi(self.BitFramingReg, 0x00)
 
-        if level == 1:
-            ser_num.append(self.PICC_ANTICOLL)
-        if level == 2:
-            ser_num.append(self.PICC_ANTICOLL2)
+        ser_num.append(self.PICC_ANTICOLL)
         ser_num.append(0x20)
 
         (status, backData, backBits) = self.to_card(self.PCD_TRANSCEIVE, ser_num)

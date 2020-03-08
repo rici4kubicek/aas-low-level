@@ -198,7 +198,7 @@ if __name__ == "__main__":
             card_data["timestamp"] = time.time()
 
         # Get the UID of the card
-        (status, uid) = MIFAREReader.anticoll(1)
+        (status, uid) = MIFAREReader.anticoll()
 
         # If we have the UID, continue
         if status == MIFAREReader.MI_OK:
@@ -213,6 +213,7 @@ if __name__ == "__main__":
                 card_data["read_state"] = "ERROR"
             data = MIFAREReader.get_version()
             card_data["tag"] = tag_parse_version(data)
+            MIFAREReader.stop_crypto1()
 
             if aas.write_data_flag:
                 aas.logger.debug(
