@@ -162,7 +162,7 @@ class MFRC522(object):
         self.write_spi(reg, tmp | mask)
 
     def clear_bit_mask(self, reg, mask):
-        tmp = self.read_spi(reg);
+        tmp = self.read_spi(reg)
         self.write_spi(reg, tmp & (~mask))
 
     def antenna_on(self):
@@ -194,7 +194,7 @@ class MFRC522(object):
         self.clear_bit_mask(self.CommIrqReg, 0x80)
         self.set_bit_mask(self.FIFOLevelReg, 0x80)
 
-        self.write_spi(self.CommandReg, self.PCD_IDLE);
+        self.write_spi(self.CommandReg, self.PCD_IDLE)
 
         while i < len(send_data):
             self.write_spi(self.FIFODataReg, send_data[i])
@@ -237,7 +237,7 @@ class MFRC522(object):
                     i = 0
                     while i < n:
                         back_data.append(self.read_spi(self.FIFODataReg))
-                        i = i + 1;
+                        i = i + 1
             else:
                 status = self.MI_ERR
 
@@ -248,7 +248,7 @@ class MFRC522(object):
 
         self.write_spi(self.BitFramingReg, 0x07)
 
-        tag_type.append(req_mode);
+        tag_type.append(req_mode)
         (status, backData, backBits) = self.to_card(self.PCD_TRANSCEIVE, tag_type)
         # print("status {} backdata {} backbit {}".format(status, backData, backBits))
 
@@ -313,7 +313,7 @@ class MFRC522(object):
 
     def calculate_crc(self, pIndata):
         self.clear_bit_mask(self.DivIrqReg, 0x04)
-        self.set_bit_mask(self.FIFOLevelReg, 0x80);
+        self.set_bit_mask(self.FIFOLevelReg, 0x80)
         i = 0
         while i < len(pIndata):
             self.write_spi(self.FIFODataReg, pIndata[i])
@@ -547,7 +547,7 @@ class MFRC522(object):
     def init(self):
 
         # io.digitalWrite(0, io.HIGH)
-        self.reset();
+        self.reset()
 
         # data = ''.join([chr(0x82), chr(0)])
         self.write_spi(self.TxModeReg, 0x0)
