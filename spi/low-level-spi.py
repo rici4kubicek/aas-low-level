@@ -25,6 +25,7 @@ LL_READER_TOPIC = LL_SPI_TOPIC + "/reader"
 LL_READER_DATA_TOPIC = LL_READER_TOPIC + "/data"
 LL_READER_DATA_READ_TOPIC = LL_READER_TOPIC + "/data/read"
 LL_READER_DATA_WRITE_TOPIC = LL_READER_TOPIC + "/data/write"
+LL_READER_STATUS_TOPIC = LL_READER_TOPIC + "/state"
 LL_SPI_MSG_TOPIC = LL_SPI_TOPIC + "/msg"
 LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
 
@@ -143,6 +144,13 @@ def tag_parse_version(data):
     return back_data
 
 
+def publish_write_status(aas, status, sector, mqtt):
+    data = {"write": {"sector": 0, "status": "NONE"}}
+    data["write"]["sector"] = sector
+    data["write"]["status"] = status
+    mqtt.publish(LL_READER_STATUS_TOPIC, json.dumps(data))
+
+
 def write_to_tag(uid, reader, aas):
     uid[0] = uid[1]
     uid[1] = uid[2]
@@ -161,8 +169,10 @@ def write_to_tag(uid, reader, aas):
                                                                hex(uid[3]), aas.write_data["sector"]))
     status = reader.write(aas.write_data["sector"], aas.write_data["data"])
     if status == reader.MI_OK:
-        mqttc.publish(LL_READER_TOPIC, "Written successful")
+        publish_write_status(aas, "OK", aas.write_data["sector"], mqttc)
         aas.write_data_flag = False
+    else:
+        publish_write_status(aas, "NOK", aas.write_data["sector"], mqttc)
 
 
 def write_multi_to_tag(uid, reader, aas):
@@ -185,8 +195,10 @@ def write_multi_to_tag(uid, reader, aas):
     while i < aas.count_of_pages_to_write:
         status = reader.write(aas.write_data["write_multi"][i]["sector"], aas.write_data["write_multi"][i]["data"])
         if status == reader.MI_OK:
-            mqttc.publish(LL_READER_TOPIC, "Written successful")
+            publish_write_status(aas, "OK", aas.write_data["write_multi"][i]["sector"], mqttc)
             i = i + 1
+        else:
+            publish_write_status(aas, "NOK", aas.write_data["write_multi"][i]["sector"], mqttc)
 
     if i == aas.count_of_pages_to_write:
         aas.write_multi_data_flag = False
