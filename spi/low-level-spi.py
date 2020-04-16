@@ -254,6 +254,8 @@ if __name__ == "__main__":
     mqttc.message_callback_add(LL_LED_TOPIC, on_leds)
     mqttc.message_callback_add(LL_READER_DATA_WRITE_TOPIC, on_write)
 
+    old_read_data = []
+
     while True:
 
         mqttc.loop()
@@ -285,7 +287,9 @@ if __name__ == "__main__":
                     card_data["read_state"] = "ERROR"
                 data = MIFAREReader.get_version()
                 card_data["tag"] = tag_parse_version(data)
-                mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
+                if old_read_data != card_data["data"]:
+                    mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
+                old_read_data = card_data["data"]
             elif aas.write_data_flag:
                 write_to_tag(uid, MIFAREReader, aas)
             elif aas.write_multi_data_flag:
@@ -293,6 +297,9 @@ if __name__ == "__main__":
                 write_multi_to_tag(uid, MIFAREReader, aas)
 
             MIFAREReader.stop_crypto1()
+            (status, TagType) = MIFAREReader.request(MIFAREReader.PICC_HALT)
+        else:
+            old_read_data = []
 
         if aas.send_led:
             aas.nanopi.led_cs_set(1)
