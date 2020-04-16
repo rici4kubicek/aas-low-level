@@ -32,7 +32,7 @@ LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
 
 class AasSpi(object):
     def __init__(self):
-        self.nanopi = None
+        self.nano_pi = None
         self.led = None
         self.logger = None
         self.send_led = False
@@ -40,6 +40,7 @@ class AasSpi(object):
         self.write_data_flag = False
         self.write_multi_data_flag = False
         self.mqtt = None
+        self.mqtt_ready = False
 
 
 def on_leds(moqs, obj, msg):
@@ -56,7 +57,7 @@ def on_leds(moqs, obj, msg):
         obj.led.prepare_data(data["led_3"]["red"], data["led_3"]["green"], data["led_3"]["blue"],
                              data["led_3"]["brightness"], 3)
         obj.send_led = True
-    except:
+    except json.JSONDecodeError:
         obj.logger.error("MQTT: received msq is not json with expected information")
 
 
@@ -79,19 +80,18 @@ def on_write(moqs, obj, msg):
             obj.write_data_flag = False
             obj.write_multi_data_flag = True
             obj.count_of_pages_to_write = len(data["write_multi"])
-    except:
+    except json.JSONDecodeError:
         obj.logger.error("MQTT: received msq is not json with expected information")
 
 
 def on_connect(mqtt_client, obj, flags, rc):
-    global mqtt_ready
     if rc == 0:
-        obj.logger.info("MQTT: Connected ")
-        mqtt_ready = 1
+        obj.logger.info("MQTT: Connected")
+        obj.mqtt_ready = True
         obj.mqtt.subscribe(LL_LED_TOPIC)
         obj.mqtt.subscribe(LL_READER_DATA_WRITE_TOPIC)
     else:
-        mqtt_ready = 0
+        obj.mqtt_ready = False
         retry_time = 2
         while rc != 0:
             time.sleep(retry_time)
@@ -102,7 +102,7 @@ def on_connect(mqtt_client, obj, flags, rc):
                 obj.logger.error("MQTT: Connection request error (Code: {c}, Message: {m})!"
                                  .format(c=type(e).__name__, m=str(e)))
                 rc = 1
-                retry_time = 10  # probably wifi/internet problem so slow down the reconnect periode
+                retry_time = 5
 
 
 def _tag_type_string(storage_size):
@@ -224,10 +224,10 @@ def main():
 
     shutdown = EShutdown()
 
-    aas.nanopi = NanoPiSpi()
-    aas.nanopi.led_cs_init()
-    aas.nanopi.led_cs_set(1)
-    aas.nanopi.open(0, 0, 2000000)
+    aas.nano_pi = NanoPiSpi()
+    aas.nano_pi.led_cs_init()
+    aas.nano_pi.led_cs_set(1)
+    aas.nano_pi.open(0, 0, 2000000)
 
     aas.led = APA102(4)
 
@@ -236,15 +236,15 @@ def main():
     aas.led.prepare_data(0, 0, 0, 0, 2)
     aas.led.prepare_data(0, 0, 0, 0, 3)
 
-    aas.nanopi.led_cs_init()
-    aas.nanopi.led_cs_set(1)
-    aas.nanopi.write(aas.led.get_data())
-    aas.nanopi.led_cs_set(0)
+    aas.nano_pi.led_cs_init()
+    aas.nano_pi.led_cs_set(1)
+    aas.nano_pi.write(aas.led.get_data())
+    aas.nano_pi.led_cs_set(0)
 
-    aas.nanopi.reader_reset_init()
-    aas.nanopi.reader_reset_set(1)
+    aas.nano_pi.reader_reset_init()
+    aas.nano_pi.reader_reset_set(1)
 
-    mifare_reader = MFRC522(aas.nanopi)
+    mifare_reader = MFRC522(aas.nano_pi)
 
     aas.mqtt = mqtt.Client()
     aas.mqtt.connect("localhost")
@@ -302,9 +302,9 @@ def main():
             old_read_data = []
 
         if aas.send_led:
-            aas.nanopi.led_cs_set(1)
-            aas.nanopi.write(aas.led.get_data())
-            aas.nanopi.led_cs_set(0)
+            aas.nano_pi.led_cs_set(1)
+            aas.nano_pi.write(aas.led.get_data())
+            aas.nano_pi.led_cs_set(0)
             aas.send_led = False
 
         if shutdown.killed:
