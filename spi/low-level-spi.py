@@ -170,10 +170,10 @@ def write_to_tag(uid, reader, aas):
                                                                hex(uid[3]), aas.write_data["sector"]))
     status = reader.write(aas.write_data["sector"], aas.write_data["data"])
     if status == reader.MI_OK:
-        publish_write_status(aas, "OK", aas.write_data["sector"], mqttc)
+        publish_write_status(aas, "OK", aas.write_data["sector"], aas.mqtt)
         aas.write_data_flag = False
     else:
-        publish_write_status(aas, "NOK", aas.write_data["sector"], mqttc)
+        publish_write_status(aas, "NOK", aas.write_data["sector"], aas.mqtt)
 
 
 def write_multi_to_tag(uid, reader, aas):
@@ -196,10 +196,10 @@ def write_multi_to_tag(uid, reader, aas):
     while i < aas.count_of_pages_to_write:
         status = reader.write(aas.write_data["write_multi"][i]["sector"], aas.write_data["write_multi"][i]["data"])
         if status == reader.MI_OK:
-            publish_write_status(aas, "OK", aas.write_data["write_multi"][i]["sector"], mqttc)
+            publish_write_status(aas, "OK", aas.write_data["write_multi"][i]["sector"], aas.mqtt)
             i = i + 1
         else:
-            publish_write_status(aas, "NOK", aas.write_data["write_multi"][i]["sector"], mqttc)
+            publish_write_status(aas, "NOK", aas.write_data["write_multi"][i]["sector"], aas.mqtt)
 
     if i == aas.count_of_pages_to_write:
         aas.write_multi_data_flag = False
@@ -244,7 +244,7 @@ def main():
     aas.nanopi.reader_reset_init()
     aas.nanopi.reader_reset_set(1)
 
-    MIFAREReader = MFRC522(aas.nanopi)
+    mifare_reader = MFRC522(aas.nanopi)
 
     aas.mqtt = mqtt.Client()
     aas.mqtt.connect("localhost")
@@ -262,42 +262,42 @@ def main():
 
         card_data = {}
         # Scan for cards
-        (status, TagType) = MIFAREReader.request(MIFAREReader.PICC_REQIDL)
+        (status, TagType) = mifare_reader.request(mifare_reader.PICC_REQIDL)
 
         # If a card is found
-        if status == MIFAREReader.MI_OK:
+        if status == mifare_reader.MI_OK:
             aas.mqtt.publish(LL_READER_TOPIC, "Some card detected")
             aas.logger.debug("CARD: card detected")
             card_data["timestamp"] = time.time()
 
         # Get the UID of the card
-        (status, uid) = MIFAREReader.anticoll(1)
+        (status, uid) = mifare_reader.anticoll(1)
 
         # If we have the UID, continue
-        if status == MIFAREReader.MI_OK:
+        if status == mifare_reader.MI_OK:
             if not aas.write_data_flag and not aas.write_multi_data_flag:
                 aas.logger.debug("Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
-                MIFAREReader.select_tag(uid)
-                card_data["data"], state = MIFAREReader.dump_ultralight(uid)
+                mifare_reader.select_tag(uid)
+                card_data["data"], state = mifare_reader.dump_ultralight(uid)
                 # properly parse UID from readed data
-                card_data["uid"] = MIFAREReader.parse_serial_number(card_data["data"])
-                if state == MIFAREReader.MI_OK:
+                card_data["uid"] = mifare_reader.parse_serial_number(card_data["data"])
+                if state == mifare_reader.MI_OK:
                     card_data["read_state"] = "OK"
                 else:
                     card_data["read_state"] = "ERROR"
-                data = MIFAREReader.get_version()
+                data = mifare_reader.get_version()
                 card_data["tag"] = tag_parse_version(data)
                 if old_read_data != card_data["data"]:
                     aas.mqtt.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
                 old_read_data = card_data["data"]
             elif aas.write_data_flag:
-                write_to_tag(uid, MIFAREReader, aas)
+                write_to_tag(uid, mifare_reader, aas)
             elif aas.write_multi_data_flag:
                 aas.logger.debug("Write multi data")
-                write_multi_to_tag(uid, MIFAREReader, aas)
+                write_multi_to_tag(uid, mifare_reader, aas)
 
-            MIFAREReader.stop_crypto1()
-            (status, TagType) = MIFAREReader.request(MIFAREReader.PICC_HALT)
+            mifare_reader.stop_crypto1()
+            (status, TagType) = mifare_reader.request(mifare_reader.PICC_HALT)
         else:
             old_read_data = []
 
