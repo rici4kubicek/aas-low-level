@@ -28,9 +28,7 @@ import binascii
 import logging
 
 
-Logger = logging.getLogger('tools.mfrc522')
-Logger.addHandler(logging.StreamHandler())
-Logger.setLevel(logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 class MFRC522(object):
@@ -270,7 +268,7 @@ class MFRC522(object):
         ser_num.append(0x20)
 
         (status, backData, backBits) = self.to_card(self.PCD_TRANSCEIVE, ser_num)
-        # print("status {} backData {} backBits {}".format(status, backData, backBits))
+        logger.debug("anticoll: status {} backData {} backBits {}".format(status, backData, backBits))
 
         if status == self.MI_OK:
             i = 0
@@ -316,7 +314,7 @@ class MFRC522(object):
         ser_num.append(crc[1])
 
         (status, backData, backBits) = self.to_card(self.PCD_TRANSCEIVE, ser_num)
-        # print("SAK status {} backdata {} backBits {}".format(status, backData, backBits))
+        logger.debug("sak: status {} backdata {} backBits {}".format(status, backData, backBits))
 
         return backData
 
@@ -353,7 +351,7 @@ class MFRC522(object):
         (status, backData, backLen) = self.to_card(self.PCD_TRANSCEIVE, buf)
 
         if (status == self.MI_OK) and (backLen == 0x18):
-            Logger.debug("Size {}".format(backData[0]))
+            logger.debug("select_tag: size {}".format(backData[0]))
             return backData[0]
         else:
             return 0
@@ -374,10 +372,10 @@ class MFRC522(object):
         buf.append(pOut[0])
         buf.append(pOut[1])
         (status, backData, backLen) = self.to_card(self.PCD_TRANSCEIVE, buf)
-        print("SelectTag2 status {} backdata {} backLen {}".format(status, backData, backLen))
+        logger.debug("select_tag2: status {} backdata {} backLen {}".format(status, backData, backLen))
 
         if (status == self.MI_OK) and (backLen == 0x18):
-            Logger.debug("Size {}".format(backData[0]))
+            logger.debug("select_tag2: size {}".format(backData[0]))
             return backData[0]
         else:
             return 0
@@ -400,12 +398,12 @@ class MFRC522(object):
 
         # Now we start the authentication itself
         (status, backData, backLen) = self.to_card(self.PCD_TRANSCEIVE, buff)
-        print("Auth status {} backdata {} backLen {}".format(status, backData, backLen))
+        logger.debug("ntag216_auth: Auth status {} backdata {} backLen {}".format(status, backData, backLen))
         # Check if an error occurred
         if not (status == self.MI_OK):
-            print("AUTH ERROR!!")
+            logger.error("ntag216_auth: AUTH ERROR!!")
         if not (self.read_spi(self.Status2Reg) & 0x08) != 0:
-            print("AUTH ERROR(status2reg & 0x08) != 0")
+            logger.error("ntag216_auth: AUTH ERROR(status2reg & 0x08) != 0")
 
         # Return the status
         return status
@@ -436,9 +434,9 @@ class MFRC522(object):
 
         # Check if an error occurred
         if not (status == self.MI_OK):
-            print("AUTH ERROR!!")
+            logger.error("auth: AUTH ERROR!!")
         if not (self.read_spi(self.Status2Reg) & 0x08) != 0:
-            print("AUTH ERROR(status2reg & 0x08) != 0")
+            logger.error("auth: AUTH ERROR(status2reg & 0x08) != 0")
 
         # Return the status
         return status
@@ -455,13 +453,13 @@ class MFRC522(object):
         recv_data.append(pOut[1])
         (status, backData, backLen) = self.to_card(self.PCD_TRANSCEIVE, recv_data)
         if not (status == self.MI_OK):
-            print("Error while reading!")
+            logger.error("read_ultralight: Error while reading!")
         i = 0
         if len(backData) == 16:
             b = []
             for item in backData:
                 b.append(hex(item))
-            print("Sector " + str(block_addr) + " " + str(b))
+            logger.debug("read_ultralight: Sector " + str(block_addr) + " " + str(b))
 
     def read(self, block_addr):
         data = []
@@ -474,13 +472,13 @@ class MFRC522(object):
         (status, backData, backLen) = self.to_card(self.PCD_TRANSCEIVE, recv_data)
 
         if not (status == self.MI_OK):
-            Logger.error("Error while reading!")
+            logger.error("read: Error while reading!")
         i = 0
         if len(backData) == 16:
             b = []
             for item in backData:
                 b.append(item)
-            Logger.debug("Sector " + str(block_addr) + " " + str(b))
+            logger.debug("read: Sector " + str(block_addr) + " " + str(b))
             data = b
         return data, status
 
@@ -507,7 +505,7 @@ class MFRC522(object):
             if status == self.MI_OK:
                 self.read(i)
             else:
-                print("Authentication error")
+                logger.error("dump_classic_1k: Authentication error")
             i = i + 1
 
     def dump_ultralight(self, uid):

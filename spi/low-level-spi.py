@@ -207,18 +207,17 @@ def write_multi_to_tag(uid, reader, aas):
 if __name__ == "__main__":
 
     aas = AasSpi()
-
-    logging.basicConfig(level=logging.ERROR)
-    aas.logger = logging.getLogger(__name__)
-    try:
-        handler = logging.handlers.RotatingFileHandler("low-level-spi.txt", maxBytes=100000)
-    except:
-        handler = logging.handlers.RotatingFileHandler("low-level-spi.txt", maxBytes=100000)
-
+    aas.logger = logging.getLogger()
+    aas.logger.setLevel(logging.DEBUG)
+    fh = logging.FileHandler("/var/log/low-level-spi.txt")
+    fh.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-
-    aas.logger.addHandler(handler)
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    aas.logger.addHandler(fh)
+    aas.logger.addHandler(ch)
 
     aas.logger.info("Core: ===================== Application start ========================")
     aas.logger.info("Script version: {}".format(__version__))
