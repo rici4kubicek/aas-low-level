@@ -145,11 +145,11 @@ def tag_parse_version(data):
     return back_data
 
 
-def publish_write_status(aas, status, sector, mqtt):
+def publish_write_status(aas, status, sector, _mqtt):
     data = {"write": {"sector": 0, "status": "NONE"}}
     data["write"]["sector"] = sector
     data["write"]["status"] = status
-    mqtt.publish(LL_READER_STATUS_TOPIC, json.dumps(data))
+    _mqtt.publish(LL_READER_STATUS_TOPIC, json.dumps(data))
 
 
 def write_to_tag(uid, reader, aas):
@@ -191,7 +191,7 @@ def write_multi_to_tag(uid, reader, aas):
     reader.select_tag2(uid)
     aas.logger.debug(
         "Card UID: {}, {}, {}, {} write multi data to sectors {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
-                                                               hex(uid[3]), aas.write_data["write_multi"]))
+                                                                         hex(uid[3]), aas.write_data["write_multi"]))
     i = 0
     while i < aas.count_of_pages_to_write:
         status = reader.write(aas.write_data["write_multi"][i]["sector"], aas.write_data["write_multi"][i]["data"])
@@ -276,7 +276,8 @@ def main():
         # If we have the UID, continue
         if status == mifare_reader.MI_OK:
             if not aas.write_data_flag and not aas.write_multi_data_flag:
-                aas.logger.debug("Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
+                aas.logger.debug(
+                    "Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
                 mifare_reader.select_tag(uid)
                 card_data["data"], state = mifare_reader.dump_ultralight(uid)
                 # properly parse UID from readed data

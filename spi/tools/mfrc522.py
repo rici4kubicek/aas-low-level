@@ -136,7 +136,7 @@ class MFRC522(object):
     serNum = []
 
     def __init__(self, nanopi_instance):
-        self.nanopi = nanopi_instance
+        self.nano_pi = nanopi_instance
         # self.nanopi.reader_cs_init()
         self.init()
 
@@ -146,12 +146,12 @@ class MFRC522(object):
 
     def write_spi(self, addr, val):
         # self.nanopi.reader_cs_set(0)
-        self.nanopi.write([(addr << 1) & 0x7E, val])
+        self.nano_pi.write([(addr << 1) & 0x7E, val])
         # self.nanopi.reader_cs_set(1)
 
     def read_spi(self, addr):
         # self.nanopi.reader_cs_set(0)
-        val = self.nanopi.read_byte([((addr << 1) & 0x7E) | 0x80, 0])
+        val = self.nano_pi.read_byte([((addr << 1) & 0x7E) | 0x80, 0])
         # self.nanopi.reader_cs_set(1)
         return val
 
@@ -529,7 +529,8 @@ class MFRC522(object):
         return data, status
 
     def get_version(self):
-        data = {"header": 0, "vendor_id": 0, "product_type": 0, "product_subtype": 0, "major_product_version": 0, "minor_product_version": 0, "storage_size": 0, "protocol_type": 0}
+        data = {"header": 0, "vendor_id": 0, "product_type": 0, "product_subtype": 0, "major_product_version": 0,
+                "minor_product_version": 0, "storage_size": 0, "protocol_type": 0}
         recv_data = []
         recv_data.append(self.PICC_AUTHENT1A)
         pOut = self.calculate_crc(recv_data)
@@ -569,44 +570,3 @@ class MFRC522(object):
         self.write_spi(self.TxAutoReg, 0x40)
         self.write_spi(self.ModeReg, 0x3D)
         self.antenna_on()
-
-        # self.Write_MFRC522(self.TModeReg, 0x8D)
-        # self.Write_MFRC522(self.TPrescalerReg, 0x3E)
-        # self.Write_MFRC522(self.TReloadRegL, 30)
-        # self.Write_MFRC522(self.TReloadRegH, 0)
-        #
-        # self.Write_MFRC522(self.TxAutoReg, 0x40)
-        # self.Write_MFRC522(self.ModeReg, 0x3D)
-        # self.AntennaOn()
-
-        # self.Write_MFRC522(self.TModeReg, 0x8D)
-        # self.Write_MFRC522(self.TPrescalerReg, 0x3E)
-        # self.Write_MFRC522(self.TReloadRegL, 0x1E)
-        # self.Write_MFRC522(self.TReloadRegH, 0x00)
-        # self.Write_MFRC522(self.TxAutoReg, 0x40)
-        # self.Write_MFRC522(self.ModeReg, 0x3D)
-        #
-        # # Set antenna gain to 48dB
-        # self.Write_MFRC522(self.RFCfgReg, 0x70)
-        #
-        # self.AntennaOn()
-#
-# spi.open("/dev/spidev0.0")
-# print("open")
-# spi.write([0x24, 0])
-# print("1st write")
-# spi.write([0x26, 0])
-# spi.write([0x48, 0x26])
-# spi.write([0x54, 0x80])
-# spi.write([0x56, 0xa9])
-# spi.write([0x58, 0x03])
-# spi.write([0x5a, 0xe8])
-# spi.write([0x2a, 0x40])
-# spi.write([0x22, 0x3d])
-# print("allwrite")
-#
-# spi.write([0x80])
-# data = spi.read(1)
-# print("xfer")
-# spi.close()
-# print(data)
