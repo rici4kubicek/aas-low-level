@@ -39,6 +39,7 @@ class AasSpi(object):
         self.write_data = {}
         self.write_data_flag = False
         self.write_multi_data_flag = False
+        self.mqtt = None
 
 
 def on_leds(moqs, obj, msg):
@@ -87,8 +88,8 @@ def on_connect(mqtt_client, obj, flags, rc):
     if rc == 0:
         obj.logger.info("MQTT: Connected ")
         mqtt_ready = 1
-        mqttc.subscribe(LL_LED_TOPIC)
-        mqttc.subscribe(LL_READER_DATA_WRITE_TOPIC)
+        obj.mqtt.subscribe(LL_LED_TOPIC)
+        obj.mqtt.subscribe(LL_READER_DATA_WRITE_TOPIC)
     else:
         mqtt_ready = 0
         retry_time = 2
@@ -204,8 +205,7 @@ def write_multi_to_tag(uid, reader, aas):
         aas.write_multi_data_flag = False
 
 
-if __name__ == "__main__":
-
+def main():
     aas = AasSpi()
     aas.logger = logging.getLogger()
     aas.logger.setLevel(logging.DEBUG)
@@ -246,19 +246,19 @@ if __name__ == "__main__":
 
     MIFAREReader = MFRC522(aas.nanopi)
 
-    mqttc = mqtt.Client()
-    mqttc.connect("localhost")
-    mqttc.publish(LL_SPI_MSG_TOPIC, "SPI is prepared")
-    mqttc.on_connect = on_connect
-    mqttc.user_data_set(aas)
-    mqttc.message_callback_add(LL_LED_TOPIC, on_leds)
-    mqttc.message_callback_add(LL_READER_DATA_WRITE_TOPIC, on_write)
+    aas.mqtt = mqtt.Client()
+    aas.mqtt.connect("localhost")
+    aas.mqtt.publish(LL_SPI_MSG_TOPIC, "SPI is prepared")
+    aas.mqtt.on_connect = on_connect
+    aas.mqtt.user_data_set(aas)
+    aas.mqtt.message_callback_add(LL_LED_TOPIC, on_leds)
+    aas.mqtt.message_callback_add(LL_READER_DATA_WRITE_TOPIC, on_write)
 
     old_read_data = []
 
     while True:
 
-        mqttc.loop()
+        aas.mqtt.loop()
 
         card_data = {}
         # Scan for cards
@@ -266,7 +266,7 @@ if __name__ == "__main__":
 
         # If a card is found
         if status == MIFAREReader.MI_OK:
-            mqttc.publish(LL_READER_TOPIC, "Some card detected")
+            aas.mqtt.publish(LL_READER_TOPIC, "Some card detected")
             aas.logger.debug("CARD: card detected")
             card_data["timestamp"] = time.time()
 
@@ -288,7 +288,7 @@ if __name__ == "__main__":
                 data = MIFAREReader.get_version()
                 card_data["tag"] = tag_parse_version(data)
                 if old_read_data != card_data["data"]:
-                    mqttc.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
+                    aas.mqtt.publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
                 old_read_data = card_data["data"]
             elif aas.write_data_flag:
                 write_to_tag(uid, MIFAREReader, aas)
@@ -310,4 +310,8 @@ if __name__ == "__main__":
         if shutdown.killed:
             break
 
-    mqttc.publish(LL_SPI_MSG_TOPIC, "SPI LL shutdown")
+    aas.mqtt.publish(LL_SPI_MSG_TOPIC, "SPI LL shutdown")
+
+
+if __name__ == "__main__":
+    main()
