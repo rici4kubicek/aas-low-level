@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../i2c/.idea/i2c.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../i2c/.idea/i2c.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../i2c/low-level-i2c.py" beforeDir="false" afterPath="$PROJECT_DIR$/../i2c/low-level-i2c.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="3d02de79-7ab6-4bf4-84d4-2035a35f033c" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -92,6 +88,7 @@
       <workItem from="1587061635443" duration="8248000" />
       <workItem from="1587069992966" duration="2353000" />
       <workItem from="1587110725017" duration="698000" />
+      <workItem from="1587111519889" duration="60000" />
     </task>
     <task id="LOCAL-00001" summary="spi: update script path">
       <created>1573072909839</created>
@@ -427,12 +424,12 @@
     </state>
     <state x="75" y="74" width="1770" height="896" key="DirDiffDialog/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1587055675589" />
     <state x="100" y="100" width="2360" height="1210" key="DirDiffDialog/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583422938335" />
-    <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl" timestamp="1587110795386">
+    <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl" timestamp="1587111577602">
       <screen x="0" y="0" width="1920" height="1044" />
     </state>
     <state x="2663" y="280" width="432" height="487" key="FileChooserDialogImpl/0.0.1920.1044/1920.0.1920.1080@1920.0.1920.1080" timestamp="1584476139534" />
     <state x="2663" y="280" width="432" height="487" key="FileChooserDialogImpl/0.140.1920.1080/1920.0.1920.1080@1920.0.1920.1080" timestamp="1581931339112" />
-    <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1587110795386" />
+    <state x="743" y="271" width="432" height="487" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1044@0.0.1920.1044" timestamp="1587111577602" />
     <state x="991" y="366" width="432" height="487" key="FileChooserDialogImpl/2560.180.1920.1080/0.0.2560.1410@0.0.2560.1410" timestamp="1583606330745" />
     <state width="1920" height="349" key="GridCell.Tab.0.bottom" timestamp="1587072348795">
       <screen x="0" y="0" width="1920" height="1044" />

@@ -101,8 +101,7 @@ def on_display(moqs, obj, msg):
 
 
 def on_connect(mqtt_client, obj, flags, rc):
-    global mqtt_ready
-    if rc==0:
+    if rc == 0:
         obj.mqtt_ready = True
         obj.mqtt.subscribe(LL_DISPLAY_TOPIC)
     else:
@@ -118,7 +117,6 @@ def on_connect(mqtt_client, obj, flags, rc):
 
 
 def main():
-
     aas = AasI2C()
     aas.logger = logging.getLogger()
     aas.logger.setLevel(logging.DEBUG)
@@ -168,7 +166,8 @@ def main():
             aas.clear_display()
             aas.clear_display_buffer()
         elif aas.display_command == "write":
-            aas.draw.text((aas.write_text["pos_x"], aas.write_text["pos_y"]), aas.write_text["text"], font=aas.fonts[aas.write_text["font"]], fill=255)
+            aas.draw.text((aas.write_text["pos_x"], aas.write_text["pos_y"]), aas.write_text["text"],
+                          font=aas.fonts[aas.write_text["font"]], fill=255)
             aas.display.image(aas.image)
             aas.send_to_display()
             aas.clear_display_buffer()
