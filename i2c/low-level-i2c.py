@@ -10,6 +10,9 @@ import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+import logging
+import logging.handlers
+from logging.handlers import RotatingFileHandler
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -37,6 +40,9 @@ class AasI2C(object):
         self.write_text = {}
         self.display_command = None
         self.display_ready = False
+        self.logger = None
+        self.mqtt = None
+        self.mqtt_ready = False
 
     def display_begin(self):
         try:
@@ -72,6 +78,8 @@ class AasI2C(object):
 
 
 def on_display(moqs, obj, msg):
+    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
+
     try:
         data = json.loads(msg.payload.decode("utf-8"))
 
@@ -88,17 +96,17 @@ def on_display(moqs, obj, msg):
             obj.write_text["font"] = data["font"]
             obj.write_text["pos_x"] = data["pos_x"]
             obj.write_text["pos_y"] = data["pos_y"]
-    except:
-        pass
+    except json.JSONDecodeError:
+        obj.logger.error("MQTT: received msq is not json with expected information")
 
 
 def on_connect(mqtt_client, obj, flags, rc):
     global mqtt_ready
     if rc==0:
-        mqtt_ready = 1
-        mqttc.subscribe(LL_DISPLAY_TOPIC)
+        obj.mqtt_ready = True
+        obj.mqtt.subscribe(LL_DISPLAY_TOPIC)
     else:
-        mqtt_ready = 0
+        obj.mqtt_ready = 0
         retry_time = 2
         while rc != 0:
             time.sleep(retry_time)
@@ -106,24 +114,38 @@ def on_connect(mqtt_client, obj, flags, rc):
                 rc = mqtt_client.reconnect()
             except Exception as e:
                 rc = 1
-                retry_time = 10  # probably wifi/internet problem so slow down the reconnect periode
+                retry_time = 5
 
 
-if __name__ == "__main__":
+def main():
 
     aas = AasI2C()
+    aas.logger = logging.getLogger()
+    aas.logger.setLevel(logging.DEBUG)
+    fh = logging.FileHandler("/var/log/low-level-i2c.txt")
+    fh.setLevel(logging.DEBUG)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    aas.logger.addHandler(fh)
+    aas.logger.addHandler(ch)
 
-    mqttc = mqtt.Client()
-    mqttc.connect("localhost")
-    mqttc.publish(LL_I2C_MSG_TOPIC, "I2C: prepared")
-    mqttc.on_connect = on_connect
-    mqttc.user_data_set(aas)
-    mqttc.message_callback_add(LL_DISPLAY_TOPIC, on_display)
+    aas.logger.info("Core: ===================== Application start ========================")
+    aas.logger.info("Script version: {}".format(__version__))
+
+    aas.mqtt = mqtt.Client()
+    aas.mqtt.connect("localhost")
+    aas.mqtt.publish(LL_I2C_MSG_TOPIC, "I2C: prepared")
+    aas.mqtt.on_connect = on_connect
+    aas.mqtt.user_data_set(aas)
+    aas.mqtt.message_callback_add(LL_DISPLAY_TOPIC, on_display)
 
     aas.display_begin()
 
     if not aas.display_ready:
-        mqttc.publish(LL_I2C_MSG_TOPIC, "I2C: display is not ready")
+        aas.mqtt.publish(LL_I2C_MSG_TOPIC, "I2C: display is not ready")
 
     aas.load_fonts(10)
     aas.load_fonts(12)
@@ -140,7 +162,7 @@ if __name__ == "__main__":
     aas.send_to_display()
 
     while 1:
-        mqttc.loop()
+        aas.mqtt.loop()
 
         if aas.display_command == "clear":
             aas.clear_display()
@@ -153,3 +175,7 @@ if __name__ == "__main__":
 
         if not aas.display_ready:
             aas.display_begin()
+
+
+if __name__ == "__main__":
+    main()
