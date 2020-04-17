@@ -154,11 +154,11 @@ def main():
     txt = "IP: " + str(IP, "ascii") + ""
 
     aas.clear_display()
-    image = Image.open('static/vut_logo_left.ppm').convert('1')
-    aas.draw = ImageDraw.Draw(image)
+    aas.image = Image.open('static/vut_logo_left.ppm').convert('1')
+    aas.draw = ImageDraw.Draw(aas.image)
     aas.draw.text((50, 4), "skurAAs", font=aas.fonts["Arial-15"], fill=255)
     aas.draw.text((32, 22), txt, font=aas.fonts["Arial-10"], fill=255)
-    aas.display.image(image)
+    aas.display.image(aas.image)
     aas.send_to_display()
 
     while 1:
