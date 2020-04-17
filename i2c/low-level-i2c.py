@@ -151,12 +151,14 @@ def main():
 
     cmd = "hostname -I | cut -d\' \' -f1"
     IP = subprocess.check_output(cmd, shell=True)
+    txt = "IP: " + str(IP, "ascii") + ""
 
-    txt = u"IP: " + str(IP, "ascii") + ""
-
-    aas.draw.text((2, 10), txt, font=aas.fonts["Arial-12"], fill=255)
-
-    aas.display.image(aas.image)
+    aas.clear_display()
+    image = Image.open('static/vut_logo_left.ppm').convert('1')
+    aas.draw = ImageDraw.Draw(image)
+    aas.draw.text((50, 4), "skurAAs", font=aas.fonts["Arial-15"], fill=255)
+    aas.draw.text((32, 22), txt, font=aas.fonts["Arial-10"], fill=255)
+    aas.display.image(image)
     aas.send_to_display()
 
     while 1:
