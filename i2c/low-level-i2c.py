@@ -150,8 +150,8 @@ def main():
     aas.load_fonts(15)
 
     cmd = "hostname -I | cut -d\' \' -f1"
-    IP = subprocess.check_output(cmd, shell=True)
-    txt = "IP: " + str(IP, "ascii") + ""
+    ip = subprocess.check_output(cmd, shell=True)
+    txt = "IP: " + str(ip, "ascii") + ""
 
     aas.clear_display()
     aas.image = Image.open('static/vut_logo_left.ppm').convert('1')
