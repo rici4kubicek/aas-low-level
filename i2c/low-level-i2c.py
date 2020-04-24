@@ -13,6 +13,7 @@ from PIL import ImageFont
 import logging
 import logging.handlers
 from logging.handlers import RotatingFileHandler
+from tools.touch_control import TouchControl
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -43,6 +44,7 @@ class AasI2C(object):
         self.logger = None
         self.mqtt = None
         self.mqtt_ready = False
+        self.touch = TouchControl(i2c_bus="0")
 
     def display_begin(self):
         try:
@@ -161,8 +163,12 @@ def main():
     aas.display.image(aas.image)
     aas.send_to_display()
 
+    aas.mqtt.loop_start()
+
     while 1:
-        aas.mqtt.loop()
+        key = aas.touch.read_active_key()
+        if key:
+            print(key)
 
         if aas.display_command == "clear":
             aas.clear_display()
@@ -177,6 +183,19 @@ def main():
         if not aas.display_ready:
             aas.display_begin()
 
+        aas.touch.wait_events(0.01)
+
+
+def touch_handle():
+    touch = TouchControl(i2c_bus="0")
+
+    while 1:
+        key = touch.read_active_key()
+        if key:
+            print(key)
+        touch.wait_events()
+
 
 if __name__ == "__main__":
     main()
+
