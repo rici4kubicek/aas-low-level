@@ -102,7 +102,6 @@ class TouchControl(object):
                     key_value = key_value + 1
                     i = i >> 1
 
-                active_key = key_value & 0xff
                 if key_value == 9:
                     self._hold_down = False
 
