@@ -27,6 +27,7 @@ __status__ = "Private Beta"
 LL_I2C_TOPIC = "i2c"
 LL_DISPLAY_TOPIC = LL_I2C_TOPIC + "/display"
 LL_I2C_MSG_TOPIC = LL_I2C_TOPIC + "/msg"
+LL_TOUCH_TOPIC = LL_I2C_TOPIC + "/touch"
 
 
 class AasI2C(object):
@@ -156,9 +157,8 @@ def main():
     txt = "IP: " + str(ip, "ascii") + ""
 
     aas.clear_display()
-    aas.image = Image.open('static/vut_logo_left.ppm').convert('1')
+    aas.image = Image.open('static/vut_logo_left_name.png').convert('1').resize((128, 32), Image.ANTIALIAS)
     aas.draw = ImageDraw.Draw(aas.image)
-    aas.draw.text((50, 4), "skurAAs", font=aas.fonts["Arial-15"], fill=255)
     aas.draw.text((32, 22), txt, font=aas.fonts["Arial-10"], fill=255)
     aas.display.image(aas.image)
     aas.send_to_display()
