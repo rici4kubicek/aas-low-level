@@ -1,9 +1,7 @@
 import logging
 import time
-from nightWiring import io
-import Adafruit_GPIO as GPIO
 import Adafruit_GPIO.I2C as I2C
-from array import array
+from .gpio import Controller, INPUT, OUTPUT, FALLING, EPOLL_TIMEOUT
 
 
 class TouchControl(object):
@@ -29,11 +27,11 @@ class TouchControl(object):
         self._key_hit = False
         self._hold_down = False
         self._init_ok = False
-        pin_map = array('i', [self.TOUCH_RESET_PIN, self.TOUCH_CHANGE_PIN])
-        io.setupGPIO(pin_map, len([self.TOUCH_RESET_PIN, self.TOUCH_CHANGE_PIN]))
-        io.pinMode(0, io.OUTPUT)
-        io.digitalWrite(0, io.HIGH)
-        io.pinMode(1, io.INPUT)
+        Controller.available_pins = [self.TOUCH_RESET_PIN] + Controller.available_pins
+        Controller.available_pins = [self.TOUCH_CHANGE_PIN] + Controller.available_pins
+        self._reset_pin = Controller.alloc_pin(self.TOUCH_RESET_PIN, OUTPUT)
+        self._reset_pin.set()
+        self._change_pin = Controller.alloc_pin(self.TOUCH_CHANGE_PIN, INPUT, self._read_state, FALLING)
         time.sleep(1)
 
         if i2c_bus is None:
@@ -53,15 +51,14 @@ class TouchControl(object):
         if chip_id == self.TOUCH_CHIP_ID:
             self._init_ok = True
 
-    def read_state(self):
+    def _read_state(self, number, state):
         if self._init_ok:
-            change_state = io.digitalRead(1)
-            if not change_state:
-                self._key_hit = True
-                self._hold_down = True
-                self.logger.debug("read_state: log 0")
-            else:
-                self.logger.debug("read_state: log 1")
+            self._key_hit = True
+            self._hold_down = True
+            self.logger.debug("read_state: irq handled log 0")
+
+    def wait_events(self, timeout=EPOLL_TIMEOUT):
+        Controller.wait_events(timeout)
 
     @staticmethod
     def read_active_address(self):
@@ -89,8 +86,6 @@ class TouchControl(object):
             _group = 1
         else:
             return False
-        print(_key)
-        print(_value)
         self._i2c.write8(self.TOUCH_CMD_REG_AVEASK0_OFSSET + _key, _value | _group)
         return True
 
