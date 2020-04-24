@@ -58,7 +58,8 @@ class TouchControl(object):
             self.logger.debug("read_state: irq handled log 0")
 
     def wait_events(self, timeout=EPOLL_TIMEOUT):
-        Controller.wait_events(timeout)
+        if self._init_ok:
+            Controller.wait_events(timeout)
 
     @staticmethod
     def read_active_address(self):
