@@ -55,7 +55,7 @@ class TouchControl(object):
         if self._init_ok:
             self._key_hit = True
             self._hold_down = True
-            self.logger.debug("read_state: irq handled log 0")
+            self.logger.debug("read_state: irq change handled")
 
     def wait_events(self, timeout=EPOLL_TIMEOUT):
         if self._init_ok:
