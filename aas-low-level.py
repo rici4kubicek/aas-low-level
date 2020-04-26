@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import paho.mqtt.client as mqtt
+import paho.mqtt.client as mqtt_client
 import json
 import os
 import fnmatch
@@ -14,6 +14,8 @@ import logging
 import logging.handlers
 from logging.handlers import RotatingFileHandler
 from app.touch_control import TouchControl
+from app.nanopi_spi import NanoPiSpi
+from app.apa102 import APA102
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -38,13 +40,20 @@ LL_SPI_MSG_TOPIC = LL_SPI_TOPIC + "/msg"
 LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
 
 
-class Aas(object):
+class Aas:
+    _mqtt = mqtt_client.Client()
+
     def __init__(self):
-        self.i2c = None
-        self.spi = None
-        self.mqtt = None
+        self.i2c = AasI2C()
+        self.spi = AasSpi()
         self.mqtt_ready = False
         self.logger = None
+
+    def publish(self, topic, data):
+        self._mqtt.publish(topic, data)
+
+    def mqtt(self):
+        return self._mqtt
 
 
 class AasI2C(Aas):
@@ -96,17 +105,43 @@ class AasI2C(Aas):
     def button_pressed_notification(self, _btn):
         msg = {}
         msg["button"] = _btn
-        self.mqtt.publish(LL_TOUCH_TOPIC, json.dumps(msg))
+        super().publish(LL_TOUCH_TOPIC, json.dumps(msg))
+
+    def init_screen(self):
+        cmd = "hostname -I | cut -d\' \' -f1"
+        ip = subprocess.check_output(cmd, shell=True)
+        txt = "IP: " + str(ip, "ascii") + ""
+
+        self.clear_display()
+        self.image = Image.open('static/vut_logo_left_name.png').convert('1').resize((128, 32), Image.ANTIALIAS)
+        self.draw = ImageDraw.Draw(self.image)
+        self.draw.text((32, 22), txt, font=self.fonts["Arial-10"], fill=255)
+        self.display.image(self.image)
+        self.send_to_display()
 
 
 class AasSpi(Aas):
     def __init__(self):
-        self.nano_pi = None
-        self.led = None
+        self.nano_pi = NanoPiSpi()
+        self.led = APA102(4)
         self.send_led = False
         self.write_data = {}
         self.write_data_flag = False
         self.write_multi_data_flag = False
+
+        self.nano_pi.led_cs_init()
+        self.nano_pi.led_cs_set(1)
+        self.nano_pi.open(0, 0, 2000000)
+
+        self.led.prepare_data(0, 0, 0, 0, 0)
+        self.led.prepare_data(0, 0, 0, 0, 1)
+        self.led.prepare_data(0, 0, 0, 0, 2)
+        self.led.prepare_data(0, 0, 0, 0, 3)
+
+        self.nano_pi.led_cs_init()
+        self.nano_pi.led_cs_set(1)
+        self.nano_pi.write(self.led.get_data())
+        self.nano_pi.led_cs_set(0)
 
 
 def on_leds(moqs, obj, msg):
@@ -114,15 +149,15 @@ def on_leds(moqs, obj, msg):
 
     try:
         data = json.loads(msg.payload.decode("utf-8"))
-        obj.led.prepare_data(data["led_0"]["red"], data["led_0"]["green"], data["led_0"]["blue"],
+        obj.spi.led.prepare_data(data["led_0"]["red"], data["led_0"]["green"], data["led_0"]["blue"],
                              data["led_0"]["brightness"], 0)
-        obj.led.prepare_data(data["led_1"]["red"], data["led_1"]["green"], data["led_1"]["blue"],
+        obj.spi.led.prepare_data(data["led_1"]["red"], data["led_1"]["green"], data["led_1"]["blue"],
                              data["led_1"]["brightness"], 1)
-        obj.led.prepare_data(data["led_2"]["red"], data["led_2"]["green"], data["led_2"]["blue"],
+        obj.spi.led.prepare_data(data["led_2"]["red"], data["led_2"]["green"], data["led_2"]["blue"],
                              data["led_2"]["brightness"], 2)
-        obj.led.prepare_data(data["led_3"]["red"], data["led_3"]["green"], data["led_3"]["blue"],
+        obj.spi.led.prepare_data(data["led_3"]["red"], data["led_3"]["green"], data["led_3"]["blue"],
                              data["led_3"]["brightness"], 3)
-        obj.send_led = True
+        obj.spi.send_led = True
     except json.JSONDecodeError:
         obj.logger.error("MQTT: received msq is not json with expected information")
 
@@ -133,19 +168,19 @@ def on_write(moqs, obj, msg):
     try:
         data = json.loads(msg.payload.decode("utf-8"))
         if "write" in data:
-            obj.write_data["sector"] = data["write"][0]["sector"]
-            obj.write_data["data"] = data["write"][0]["data"]
-            obj.logger.debug(obj.write_data)
-            obj.write_data_flag = True
-            obj.write_multi_data_flag = False
-            obj.count_of_pages_to_write = len(data["write"])
+            obj.spi.write_data["sector"] = data["write"][0]["sector"]
+            obj.spi.write_data["data"] = data["write"][0]["data"]
+            obj.logger.debug(obj.spi.write_data)
+            obj.spi.write_data_flag = True
+            obj.spi.write_multi_data_flag = False
+            obj.spi.count_of_pages_to_write = len(data["write"])
         elif "write_multi" in data:
             print(data["write_multi"])
-            obj.write_data["write_multi"] = data["write_multi"]
-            obj.logger.debug(obj.write_data)
-            obj.write_data_flag = False
-            obj.write_multi_data_flag = True
-            obj.count_of_pages_to_write = len(data["write_multi"])
+            obj.spi.write_data["write_multi"] = data["write_multi"]
+            obj.logger.debug(obj.spi.write_data)
+            obj.spi.write_data_flag = False
+            obj.spi.write_multi_data_flag = True
+            obj.spi.count_of_pages_to_write = len(data["write_multi"])
     except json.JSONDecodeError:
         obj.logger.error("MQTT: received msq is not json with expected information")
 
@@ -158,17 +193,17 @@ def on_display(moqs, obj, msg):
 
         if 'cmd' in data.keys():
             if data["cmd"] == "clear":
-                obj.display_command = "clear"
+                obj.i2c.display_command = "clear"
             elif data["cmd"] == "write":
-                obj.display_command = "write"
+                obj.i2c.display_command = "write"
             else:
-                obj.display_command = None
+                obj.i2c.display_command = None
 
         if 'text' in data.keys() and 'font' in data.keys() and 'pos_x' in data.keys() and 'pos_y' in data.keys():
-            obj.write_text["text"] = data["text"]
-            obj.write_text["font"] = data["font"]
-            obj.write_text["pos_x"] = data["pos_x"]
-            obj.write_text["pos_y"] = data["pos_y"]
+            obj.i2c.write_text["text"] = data["text"]
+            obj.i2c.write_text["font"] = data["font"]
+            obj.i2c.write_text["pos_x"] = data["pos_x"]
+            obj.i2c.write_text["pos_y"] = data["pos_y"]
     except json.JSONDecodeError:
         obj.logger.error("MQTT: received msq is not json with expected information")
 
@@ -176,7 +211,9 @@ def on_display(moqs, obj, msg):
 def on_connect(mqtt_client, obj, flags, rc):
     if rc == 0:
         obj.mqtt_ready = True
-        obj.mqtt.subscribe(LL_DISPLAY_TOPIC)
+        obj.mqtt().subscribe(LL_DISPLAY_TOPIC)
+        obj.mqtt().subscribe(LL_LED_TOPIC)
+        obj.mqtt().subscribe(LL_READER_DATA_WRITE_TOPIC)
     else:
         obj.mqtt_ready = 0
         retry_time = 2
@@ -189,11 +226,111 @@ def on_connect(mqtt_client, obj, flags, rc):
                 retry_time = 5
 
 
+def _tag_type_string(storage_size):
+    if storage_size == 0x0f:
+        return "NTAG213"
+    elif storage_size == 0x11:
+        return "NTAG215"
+    elif storage_size == 0x13:
+        return "NTAG216"
+    else:
+        return "Unknown"
+
+
+def _tag_memory_size(storage_size):
+    if storage_size == 0x0f:
+        return 144
+    elif storage_size == 0x11:
+        return 504
+    elif storage_size == 0x13:
+        return 888
+    else:
+        return 0
+
+
+def _tag_vendor_to_string(vendor_id):
+    if vendor_id == 4:
+        return "NXP"
+    else:
+        return "Unknown"
+
+
+def _tag_user_memory_offset(data):
+    return 4
+
+
+def tag_parse_version(data):
+    back_data = {"tag_size": _tag_memory_size(data["storage_size"]), "tag_type": _tag_type_string(data["storage_size"]),
+                 "tag_vendor": _tag_vendor_to_string(data["vendor_id"]), "tag_protocol": data["protocol_type"],
+                 "user_memory_offset": _tag_user_memory_offset(data)}
+    return back_data
+
+
+def publish_write_status(aas, status, sector, _mqtt):
+    data = {"write": {"sector": 0, "status": "NONE"}}
+    data["write"]["sector"] = sector
+    data["write"]["status"] = status
+    _mqtt.publish(LL_READER_STATUS_TOPIC, json.dumps(data))
+
+
+def write_to_tag(uid, reader, aas):
+    uid[0] = uid[1]
+    uid[1] = uid[2]
+    uid[2] = uid[3]
+
+    SAK1 = reader.sak(uid)
+
+    (Status, uid2) = reader.anticoll(2)
+    uid[3] = uid2[0]
+    uid[4] = uid2[1]
+    uid.append(uid2[2])
+    uid.append(uid2[3])
+    reader.select_tag2(uid)
+    aas.logger.debug(
+        "Card UID: {}, {}, {}, {} write data to sector".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
+                                                               hex(uid[3]), aas.write_data["sector"]))
+    status = reader.write(aas.write_data["sector"], aas.write_data["data"])
+    if status == reader.MI_OK:
+        publish_write_status(aas, "OK", aas.write_data["sector"], aas.mqtt)
+        aas.write_data_flag = False
+    else:
+        publish_write_status(aas, "NOK", aas.write_data["sector"], aas.mqtt)
+
+
+def write_multi_to_tag(uid, reader, aas):
+    uid[0] = uid[1]
+    uid[1] = uid[2]
+    uid[2] = uid[3]
+
+    SAK1 = reader.sak(uid)
+
+    (Status, uid2) = reader.anticoll(2)
+    uid[3] = uid2[0]
+    uid[4] = uid2[1]
+    uid.append(uid2[2])
+    uid.append(uid2[3])
+    reader.select_tag2(uid)
+    aas.logger.debug(
+        "Card UID: {}, {}, {}, {} write multi data to sectors {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
+                                                                         hex(uid[3]), aas.write_data["write_multi"]))
+    i = 0
+    while i < aas.count_of_pages_to_write:
+        status = reader.write(aas.write_data["write_multi"][i]["sector"], aas.write_data["write_multi"][i]["data"])
+        if status == reader.MI_OK:
+            publish_write_status(aas, "OK", aas.write_data["write_multi"][i]["sector"], aas.mqtt)
+            i = i + 1
+        else:
+            publish_write_status(aas, "NOK", aas.write_data["write_multi"][i]["sector"], aas.mqtt)
+
+    if i == aas.count_of_pages_to_write:
+        aas.write_multi_data_flag = False
+
+
 def main():
-    aas = AasI2C()
+    aas = Aas()
     aas.logger = logging.getLogger()
     aas.logger.setLevel(logging.DEBUG)
-    fh = logging.FileHandler("/var/log/low-level-i2c.txt")
+    fh = logging.FileHandler("/var/log/low-level.txt")
     fh.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
@@ -206,54 +343,46 @@ def main():
     aas.logger.info("Core: ===================== Application start ========================")
     aas.logger.info("Script version: {}".format(__version__))
 
-    aas.mqtt = mqtt.Client()
-    aas.mqtt.connect("localhost")
-    aas.mqtt.publish(LL_I2C_MSG_TOPIC, "I2C: prepared")
-    aas.mqtt.on_connect = on_connect
-    aas.mqtt.user_data_set(aas)
-    aas.mqtt.message_callback_add(LL_DISPLAY_TOPIC, on_display)
+    aas.mqtt().connect("localhost")
+    aas.mqtt().publish(LL_I2C_MSG_TOPIC, "I2C: prepared")
+    aas.mqtt().on_connect = on_connect
+    aas.mqtt().user_data_set(aas)
+    aas.mqtt().message_callback_add(LL_DISPLAY_TOPIC, on_display)
+    aas.mqtt().message_callback_add(LL_LED_TOPIC, on_leds)
+    aas.mqtt().message_callback_add(LL_READER_DATA_WRITE_TOPIC, on_write)
 
-    aas.display_begin()
+    aas.i2c.display_begin()
 
-    if not aas.display_ready:
-        aas.mqtt.publish(LL_I2C_MSG_TOPIC, "I2C: display is not ready")
+    if not aas.i2c.display_ready:
+        aas.mqtt().publish(LL_I2C_MSG_TOPIC, "I2C: display is not ready")
 
-    aas.load_fonts(10)
-    aas.load_fonts(12)
-    aas.load_fonts(15)
+    aas.i2c.load_fonts(10)
+    aas.i2c.load_fonts(12)
+    aas.i2c.load_fonts(15)
 
-    cmd = "hostname -I | cut -d\' \' -f1"
-    ip = subprocess.check_output(cmd, shell=True)
-    txt = "IP: " + str(ip, "ascii") + ""
+    aas.i2c.init_screen()
 
-    aas.clear_display()
-    aas.image = Image.open('static/vut_logo_left_name.png').convert('1').resize((128, 32), Image.ANTIALIAS)
-    aas.draw = ImageDraw.Draw(aas.image)
-    aas.draw.text((32, 22), txt, font=aas.fonts["Arial-10"], fill=255)
-    aas.display.image(aas.image)
-    aas.send_to_display()
-
-    aas.mqtt.loop_start()
+    aas.mqtt().loop_start()
 
     while 1:
-        key = aas.touch.read_active_key()
+        key = aas.i2c.touch.read_active_key()
         if key:
-            aas.button_pressed_notification(key)
+            aas.i2c.button_pressed_notification(key)
 
-        if aas.display_command == "clear":
-            aas.clear_display()
-            aas.clear_display_buffer()
-        elif aas.display_command == "write":
-            aas.draw.text((aas.write_text["pos_x"], aas.write_text["pos_y"]), aas.write_text["text"],
-                          font=aas.fonts[aas.write_text["font"]], fill=255)
-            aas.display.image(aas.image)
-            aas.send_to_display()
-            aas.clear_display_buffer()
+        if aas.i2c.display_command == "clear":
+            aas.i2c.clear_display()
+            aas.i2c.clear_display_buffer()
+        elif aas.i2c.display_command == "write":
+            aas.i2c.draw.text((aas.i2c.write_text["pos_x"], aas.i2c.write_text["pos_y"]), aas.i2c.write_text["text"],
+                          font=aas.i2c.fonts[aas.i2c.write_text["font"]], fill=255)
+            aas.i2c.display.image(aas.i2c.image)
+            aas.i2c.send_to_display()
+            aas.i2c.clear_display_buffer()
 
-        if not aas.display_ready:
-            aas.display_begin()
+        if not aas.i2c.display_ready:
+            aas.i2c.display_begin()
 
-        aas.touch.wait_events(0.01)
+        aas.i2c.touch.wait_events(0.01)
 
 
 def touch_handle():
