@@ -13,6 +13,7 @@ from PIL import ImageFont
 import logging
 import logging.handlers
 from logging.handlers import RotatingFileHandler
+from tools.touch_control import TouchControl
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -26,6 +27,7 @@ __status__ = "Private Beta"
 LL_I2C_TOPIC = "i2c"
 LL_DISPLAY_TOPIC = LL_I2C_TOPIC + "/display"
 LL_I2C_MSG_TOPIC = LL_I2C_TOPIC + "/msg"
+LL_TOUCH_TOPIC = LL_I2C_TOPIC + "/touch"
 
 
 class AasI2C(object):
@@ -43,6 +45,7 @@ class AasI2C(object):
         self.logger = None
         self.mqtt = None
         self.mqtt_ready = False
+        self.touch = TouchControl(i2c_bus="0")
 
     def display_begin(self):
         try:
@@ -75,6 +78,11 @@ class AasI2C(object):
         for font in files:
             if fnmatch.fnmatch(font, pattern):
                 self.fonts[font[:-4] + "-" + str(size) + ""] = ImageFont.truetype("" + path + font + "", size)
+
+    def button_pressed_notification(self, _btn):
+        msg = {}
+        msg["button"] = _btn
+        self.mqtt.publish(LL_TOUCH_TOPIC, json.dumps(msg))
 
 
 def on_display(moqs, obj, msg):
@@ -154,15 +162,18 @@ def main():
     txt = "IP: " + str(ip, "ascii") + ""
 
     aas.clear_display()
-    aas.image = Image.open('static/vut_logo_left.ppm').convert('1')
+    aas.image = Image.open('static/vut_logo_left_name.png').convert('1').resize((128, 32), Image.ANTIALIAS)
     aas.draw = ImageDraw.Draw(aas.image)
-    aas.draw.text((50, 4), "skurAAs", font=aas.fonts["Arial-15"], fill=255)
     aas.draw.text((32, 22), txt, font=aas.fonts["Arial-10"], fill=255)
     aas.display.image(aas.image)
     aas.send_to_display()
 
+    aas.mqtt.loop_start()
+
     while 1:
-        aas.mqtt.loop()
+        key = aas.touch.read_active_key()
+        if key:
+            aas.button_pressed_notification(key)
 
         if aas.display_command == "clear":
             aas.clear_display()
@@ -177,6 +188,19 @@ def main():
         if not aas.display_ready:
             aas.display_begin()
 
+        aas.touch.wait_events(0.01)
+
+
+def touch_handle():
+    touch = TouchControl(i2c_bus="0")
+
+    while 1:
+        key = touch.read_active_key()
+        if key:
+            print(key)
+        touch.wait_events()
+
 
 if __name__ == "__main__":
     main()
+
