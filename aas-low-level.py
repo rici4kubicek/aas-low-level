@@ -16,6 +16,7 @@ from logging.handlers import RotatingFileHandler
 from app.touch_control import TouchControl
 from app.nanopi_spi import NanoPiSpi
 from app.apa102 import APA102
+from app.mfrc522 import MFRC522
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -42,18 +43,24 @@ LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
 
 class Aas:
     _mqtt = mqtt_client.Client()
+    _logger = logging.getLogger()
 
     def __init__(self):
         self.i2c = AasI2C()
         self.spi = AasSpi()
         self.mqtt_ready = False
-        self.logger = None
 
     def publish(self, topic, data):
         self._mqtt.publish(topic, data)
 
     def mqtt(self):
         return self._mqtt
+
+    def logger(self):
+        return self._logger
+
+    def logger_debug(self, _str):
+        self._logger.debug(_str)
 
 
 class AasI2C(Aas):
@@ -142,6 +149,7 @@ class AasSpi(Aas):
         self.write_data = {}
         self.write_data_flag = False
         self.write_multi_data_flag = False
+        self.old_read_data = []
 
         self.nano_pi.led_cs_init()
         self.nano_pi.led_cs_set(1)
@@ -156,6 +164,63 @@ class AasSpi(Aas):
         self.nano_pi.led_cs_set(1)
         self.nano_pi.write(self.led.get_data())
         self.nano_pi.led_cs_set(0)
+
+        self.nano_pi.reader_reset_init()
+        self.nano_pi.reader_reset_set(1)
+
+        self.mifare_reader = MFRC522(self.nano_pi)
+
+    def reader_loop(self):
+        card_data = {}
+        # Scan for cards
+        (status, TagType) = self.mifare_reader.request(self.mifare_reader.PICC_REQIDL)
+
+        # If a card is found
+        if status == self.mifare_reader.MI_OK:
+            super().publish(LL_READER_TOPIC, "Some card detected")
+            super().logger_debug("CARD: card detected")
+            card_data["timestamp"] = time.time()
+
+        # Get the UID of the card
+        (status, uid) = self.mifare_reader.anticoll(1)
+
+        # If we have the UID, continue
+        if status == self.mifare_reader.MI_OK:
+            if not self.write_data_flag and not self.write_multi_data_flag:
+                super().logger_debug(
+                    "Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
+                self.mifare_reader.select_tag(uid)
+                card_data["data"], state = self.mifare_reader.dump_ultralight(uid)
+                # properly parse UID from readed data
+                card_data["uid"] = self.mifare_reader.parse_serial_number(card_data["data"])
+                if state == self.mifare_reader.MI_OK:
+                    card_data["read_state"] = "OK"
+                else:
+                    card_data["read_state"] = "ERROR"
+                data = self.mifare_reader.get_version()
+                card_data["tag"] = tag_parse_version(data)
+                if self.old_read_data != card_data["data"]:
+                    super().publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
+                self.old_read_data = card_data["data"]
+            elif self.write_data_flag:
+                #write_to_tag(uid, self.mifare_reader, aas)
+                pass
+            elif self.write_multi_data_flag:
+                super().logger_debug("Write multi data")
+                #write_multi_to_tag(uid, mifare_reader, aas)
+                pass
+
+            self.mifare_reader.stop_crypto1()
+            (status, TagType) = self.mifare_reader.request(self.mifare_reader.PICC_HALT)
+        else:
+            self.old_read_data = []
+
+    def led_loop(self):
+        if self.send_led:
+            self.nano_pi.led_cs_set(1)
+            self.nano_pi.write(self.led.get_data())
+            self.nano_pi.led_cs_set(0)
+            self.send_led = False
 
 
 def on_leds(moqs, obj, msg):
@@ -342,8 +407,7 @@ def write_multi_to_tag(uid, reader, aas):
 
 def main():
     aas = Aas()
-    aas.logger = logging.getLogger()
-    aas.logger.setLevel(logging.DEBUG)
+    aas.logger().setLevel(logging.DEBUG)
     fh = logging.FileHandler("/var/log/low-level.txt")
     fh.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
@@ -351,11 +415,11 @@ def main():
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)
-    aas.logger.addHandler(fh)
-    aas.logger.addHandler(ch)
+    aas.logger().addHandler(fh)
+    aas.logger().addHandler(ch)
 
-    aas.logger.info("Core: ===================== Application start ========================")
-    aas.logger.info("Script version: {}".format(__version__))
+    aas.logger().info("Core: ===================== Application start ========================")
+    aas.logger().info("Script version: {}".format(__version__))
 
     aas.mqtt().connect("localhost")
     aas.mqtt().publish(LL_I2C_MSG_TOPIC, "I2C: prepared")
@@ -384,6 +448,10 @@ def main():
             aas.i2c.button_pressed_notification(key)
 
         aas.i2c.display_loop()
+
+        aas.spi.reader_loop()
+
+        aas.spi.led_loop()
 
         aas.i2c.touch.wait_events(0.01)
 
