@@ -79,6 +79,11 @@ class AasI2C(object):
             if fnmatch.fnmatch(font, pattern):
                 self.fonts[font[:-4] + "-" + str(size) + ""] = ImageFont.truetype("" + path + font + "", size)
 
+    def button_pressed_notification(self, _btn):
+        msg = {}
+        msg["button"] = _btn
+        self.mqtt.publish(LL_TOUCH_TOPIC, json.dumps(msg))
+
 
 def on_display(moqs, obj, msg):
     obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
@@ -168,7 +173,7 @@ def main():
     while 1:
         key = aas.touch.read_active_key()
         if key:
-            print(key)
+            aas.button_pressed_notification(key)
 
         if aas.display_command == "clear":
             aas.clear_display()
