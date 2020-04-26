@@ -28,9 +28,26 @@ LL_I2C_TOPIC = "i2c"
 LL_DISPLAY_TOPIC = LL_I2C_TOPIC + "/display"
 LL_I2C_MSG_TOPIC = LL_I2C_TOPIC + "/msg"
 LL_TOUCH_TOPIC = LL_I2C_TOPIC + "/touch"
+LL_SPI_TOPIC = "spi"
+LL_READER_TOPIC = LL_SPI_TOPIC + "/reader"
+LL_READER_DATA_TOPIC = LL_READER_TOPIC + "/data"
+LL_READER_DATA_READ_TOPIC = LL_READER_TOPIC + "/data/read"
+LL_READER_DATA_WRITE_TOPIC = LL_READER_TOPIC + "/data/write"
+LL_READER_STATUS_TOPIC = LL_READER_TOPIC + "/state"
+LL_SPI_MSG_TOPIC = LL_SPI_TOPIC + "/msg"
+LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
 
 
-class AasI2C(object):
+class Aas(object):
+    def __init__(self):
+        self.i2c = None
+        self.spi = None
+        self.mqtt = None
+        self.mqtt_ready = False
+        self.logger = None
+
+
+class AasI2C(Aas):
     def __init__(self):
         self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus='0')
         self._width = self.display.width
@@ -42,9 +59,6 @@ class AasI2C(object):
         self.write_text = {}
         self.display_command = None
         self.display_ready = False
-        self.logger = None
-        self.mqtt = None
-        self.mqtt_ready = False
         self.touch = TouchControl(i2c_bus="0")
 
     def display_begin(self):
@@ -83,6 +97,57 @@ class AasI2C(object):
         msg = {}
         msg["button"] = _btn
         self.mqtt.publish(LL_TOUCH_TOPIC, json.dumps(msg))
+
+
+class AasSpi(Aas):
+    def __init__(self):
+        self.nano_pi = None
+        self.led = None
+        self.send_led = False
+        self.write_data = {}
+        self.write_data_flag = False
+        self.write_multi_data_flag = False
+
+
+def on_leds(moqs, obj, msg):
+    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
+
+    try:
+        data = json.loads(msg.payload.decode("utf-8"))
+        obj.led.prepare_data(data["led_0"]["red"], data["led_0"]["green"], data["led_0"]["blue"],
+                             data["led_0"]["brightness"], 0)
+        obj.led.prepare_data(data["led_1"]["red"], data["led_1"]["green"], data["led_1"]["blue"],
+                             data["led_1"]["brightness"], 1)
+        obj.led.prepare_data(data["led_2"]["red"], data["led_2"]["green"], data["led_2"]["blue"],
+                             data["led_2"]["brightness"], 2)
+        obj.led.prepare_data(data["led_3"]["red"], data["led_3"]["green"], data["led_3"]["blue"],
+                             data["led_3"]["brightness"], 3)
+        obj.send_led = True
+    except json.JSONDecodeError:
+        obj.logger.error("MQTT: received msq is not json with expected information")
+
+
+def on_write(moqs, obj, msg):
+    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
+
+    try:
+        data = json.loads(msg.payload.decode("utf-8"))
+        if "write" in data:
+            obj.write_data["sector"] = data["write"][0]["sector"]
+            obj.write_data["data"] = data["write"][0]["data"]
+            obj.logger.debug(obj.write_data)
+            obj.write_data_flag = True
+            obj.write_multi_data_flag = False
+            obj.count_of_pages_to_write = len(data["write"])
+        elif "write_multi" in data:
+            print(data["write_multi"])
+            obj.write_data["write_multi"] = data["write_multi"]
+            obj.logger.debug(obj.write_data)
+            obj.write_data_flag = False
+            obj.write_multi_data_flag = True
+            obj.count_of_pages_to_write = len(data["write_multi"])
+    except json.JSONDecodeError:
+        obj.logger.error("MQTT: received msq is not json with expected information")
 
 
 def on_display(moqs, obj, msg):
