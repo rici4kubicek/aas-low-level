@@ -13,7 +13,7 @@ from PIL import ImageFont
 import logging
 import logging.handlers
 from logging.handlers import RotatingFileHandler
-from tools.touch_control import TouchControl
+from app.touch_control import TouchControl
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
