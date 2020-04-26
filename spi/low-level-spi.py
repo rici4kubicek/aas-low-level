@@ -2,10 +2,10 @@
 import logging
 import logging.handlers
 from logging.handlers import RotatingFileHandler
-from app.nanopi_spi import *
-from app.mfrc522 import *
-from app.shutdown import *
-from app.apa102 import *
+from tools.nanopi_spi import *
+from tools.mfrc522 import *
+from tools.shutdown import *
+from tools.apa102 import *
 import paho.mqtt.client as mqtt
 import json
 import os

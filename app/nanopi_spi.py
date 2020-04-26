@@ -18,7 +18,7 @@ class NanoPiSpi(object):
         self.spi = None
         self.led_cs = Controller.alloc_pin(self.LED_CS_PIN, OUTPUT)
         self.reader_rst = Controller.alloc_pin(self.READER_RST_PIN, OUTPUT)
-        self.reader_cs = Controller.alloc_pin(self.READER_CS_PIN, OUTPUT)
+        #self.reader_cs = Controller.alloc_pin(self.READER_CS_PIN, OUTPUT)
 
     def open(self, spi_bus, spi_device, max_speed_hz):
         """ Open SPI bus

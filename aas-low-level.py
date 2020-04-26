@@ -408,7 +408,7 @@ def write_multi_to_tag(uid, reader, aas):
 def main():
     aas = Aas()
     aas.logger().setLevel(logging.DEBUG)
-    fh = logging.FileHandler("/var/log/low-level.txt")
+    fh = logging.FileHandler("/var/log/aas-low-level.txt")
     fh.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
     ch.setLevel(logging.DEBUG)
@@ -442,7 +442,7 @@ def main():
 
     aas.mqtt().loop_start()
 
-    while 1:
+    while True:
         key = aas.i2c.touch.read_active_key()
         if key:
             aas.i2c.button_pressed_notification(key)
