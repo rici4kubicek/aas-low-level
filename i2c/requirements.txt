@@ -1,4 +1,0 @@
-Adafruit-SSD1306
-Adafruit_BBIO
-paho-mqtt
-Pillow
