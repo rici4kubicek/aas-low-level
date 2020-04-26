@@ -119,6 +119,20 @@ class AasI2C(Aas):
         self.display.image(self.image)
         self.send_to_display()
 
+    def display_loop(self):
+        if self.display_command == "clear":
+            self.clear_display()
+            self.clear_display_buffer()
+        elif self.display_command == "write":
+            self.draw.text((self.write_text["pos_x"], self.write_text["pos_y"]), self.write_text["text"],
+                           font=self.fonts[self.write_text["font"]], fill=255)
+            self.display.image(self.image)
+            self.send_to_display()
+            self.clear_display_buffer()
+
+        if not self.display_ready:
+            self.display_begin()
+
 
 class AasSpi(Aas):
     def __init__(self):
@@ -150,13 +164,13 @@ def on_leds(moqs, obj, msg):
     try:
         data = json.loads(msg.payload.decode("utf-8"))
         obj.spi.led.prepare_data(data["led_0"]["red"], data["led_0"]["green"], data["led_0"]["blue"],
-                             data["led_0"]["brightness"], 0)
+                                 data["led_0"]["brightness"], 0)
         obj.spi.led.prepare_data(data["led_1"]["red"], data["led_1"]["green"], data["led_1"]["blue"],
-                             data["led_1"]["brightness"], 1)
+                                 data["led_1"]["brightness"], 1)
         obj.spi.led.prepare_data(data["led_2"]["red"], data["led_2"]["green"], data["led_2"]["blue"],
-                             data["led_2"]["brightness"], 2)
+                                 data["led_2"]["brightness"], 2)
         obj.spi.led.prepare_data(data["led_3"]["red"], data["led_3"]["green"], data["led_3"]["blue"],
-                             data["led_3"]["brightness"], 3)
+                                 data["led_3"]["brightness"], 3)
         obj.spi.send_led = True
     except json.JSONDecodeError:
         obj.logger.error("MQTT: received msq is not json with expected information")
@@ -369,18 +383,7 @@ def main():
         if key:
             aas.i2c.button_pressed_notification(key)
 
-        if aas.i2c.display_command == "clear":
-            aas.i2c.clear_display()
-            aas.i2c.clear_display_buffer()
-        elif aas.i2c.display_command == "write":
-            aas.i2c.draw.text((aas.i2c.write_text["pos_x"], aas.i2c.write_text["pos_y"]), aas.i2c.write_text["text"],
-                          font=aas.i2c.fonts[aas.i2c.write_text["font"]], fill=255)
-            aas.i2c.display.image(aas.i2c.image)
-            aas.i2c.send_to_display()
-            aas.i2c.clear_display_buffer()
-
-        if not aas.i2c.display_ready:
-            aas.i2c.display_begin()
+        aas.i2c.display_loop()
 
         aas.i2c.touch.wait_events(0.01)
 
@@ -397,4 +400,3 @@ def touch_handle():
 
 if __name__ == "__main__":
     main()
-
