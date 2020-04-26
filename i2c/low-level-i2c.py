@@ -71,7 +71,7 @@ class AasI2C(object):
             self.clear_display_buffer()
 
     def load_fonts(self, size):
-        path = './static/'
+        path = '../static/'
 
         files = os.listdir(path)
         pattern = "*.ttf"
@@ -162,7 +162,7 @@ def main():
     txt = "IP: " + str(ip, "ascii") + ""
 
     aas.clear_display()
-    aas.image = Image.open('static/vut_logo_left_name.png').convert('1').resize((128, 32), Image.ANTIALIAS)
+    aas.image = Image.open('../static/vut_logo_left_name.png').convert('1').resize((128, 32), Image.ANTIALIAS)
     aas.draw = ImageDraw.Draw(aas.image)
     aas.draw.text((32, 22), txt, font=aas.fonts["Arial-10"], fill=255)
     aas.display.image(aas.image)
