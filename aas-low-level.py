@@ -62,6 +62,9 @@ class Aas:
     def logger_debug(self, _str):
         self._logger.debug(_str)
 
+    def logger_error(self, _str):
+        self._logger.error(_str)
+
 
 class AasI2C(Aas):
     def __init__(self):
@@ -224,7 +227,7 @@ class AasSpi(Aas):
 
 
 def on_leds(moqs, obj, msg):
-    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
+    obj.logger_debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
 
     try:
         data = json.loads(msg.payload.decode("utf-8"))
@@ -238,11 +241,11 @@ def on_leds(moqs, obj, msg):
                                  data["led_3"]["brightness"], 3)
         obj.spi.send_led = True
     except json.JSONDecodeError:
-        obj.logger.error("MQTT: received msq is not json with expected information")
+        obj.logger_error("MQTT: received msq is not json with expected information")
 
 
 def on_write(moqs, obj, msg):
-    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
+    obj.logger_debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
 
     try:
         data = json.loads(msg.payload.decode("utf-8"))
@@ -261,11 +264,11 @@ def on_write(moqs, obj, msg):
             obj.spi.write_multi_data_flag = True
             obj.spi.count_of_pages_to_write = len(data["write_multi"])
     except json.JSONDecodeError:
-        obj.logger.error("MQTT: received msq is not json with expected information")
+        obj.logger_error("MQTT: received msq is not json with expected information")
 
 
 def on_display(moqs, obj, msg):
-    obj.logger.debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
+    obj.logger_debug("MQTT: topic: {}, data: {}".format(msg.topic, msg.payload.decode("utf-8")))
 
     try:
         data = json.loads(msg.payload.decode("utf-8"))
@@ -284,7 +287,7 @@ def on_display(moqs, obj, msg):
             obj.i2c.write_text["pos_x"] = data["pos_x"]
             obj.i2c.write_text["pos_y"] = data["pos_y"]
     except json.JSONDecodeError:
-        obj.logger.error("MQTT: received msq is not json with expected information")
+        obj.logger_error("MQTT: received msq is not json with expected information")
 
 
 def on_connect(mqtt_client, obj, flags, rc):
