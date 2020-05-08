@@ -17,6 +17,7 @@ from app.touch_control import TouchControl
 from app.nanopi_spi import NanoPiSpi
 from app.apa102 import APA102
 from app.mfrc522 import MFRC522
+from app.tag_helper import *
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -179,7 +180,6 @@ class AasSpi(Aas):
         data["write"]["sector"] = sector
         data["write"]["status"] = status
         super().publish(LL_READER_STATUS_TOPIC, json.dumps(data))
-
 
     def write_multi_to_tag(self, uid):
         uid[0] = uid[1]
@@ -365,45 +365,6 @@ def on_connect(mqtt_client, obj, flags, rc):
                 rc = 1
                 retry_time = 5
 
-
-def _tag_type_string(storage_size):
-    if storage_size == 0x0f:
-        return "NTAG213"
-    elif storage_size == 0x11:
-        return "NTAG215"
-    elif storage_size == 0x13:
-        return "NTAG216"
-    else:
-        return "Unknown"
-
-
-def _tag_memory_size(storage_size):
-    if storage_size == 0x0f:
-        return 144
-    elif storage_size == 0x11:
-        return 504
-    elif storage_size == 0x13:
-        return 888
-    else:
-        return 0
-
-
-def _tag_vendor_to_string(vendor_id):
-    if vendor_id == 4:
-        return "NXP"
-    else:
-        return "Unknown"
-
-
-def _tag_user_memory_offset(data):
-    return 4
-
-
-def tag_parse_version(data):
-    back_data = {"tag_size": _tag_memory_size(data["storage_size"]), "tag_type": _tag_type_string(data["storage_size"]),
-                 "tag_vendor": _tag_vendor_to_string(data["vendor_id"]), "tag_protocol": data["protocol_type"],
-                 "user_memory_offset": _tag_user_memory_offset(data)}
-    return back_data
 
 
 def main():
