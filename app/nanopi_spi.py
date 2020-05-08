@@ -1,28 +1,26 @@
 import spidev
 import threading
-from nightWiring import io
+from app.gpio import Controller, OUTPUT
 from array import array
 
 
 class NanoPiSpi(object):
 
     LED_CS_PIN = 6
-    READER_RST_PIN = 7
+    READER_RST_PIN_1 = 7
+    READER_RST_PIN_2 = 363
     READER_CS_PIN = 67
 
     def __init__(self):
-
-        pin_map = array('i', [self.LED_CS_PIN, self.READER_RST_PIN, self.READER_RST_PIN])
-        io.setupGPIO(pin_map, len([self.LED_CS_PIN, self.READER_RST_PIN, self.READER_RST_PIN]))
-        idx = 0
-        while idx < len([self.LED_CS_PIN, self.READER_RST_PIN, self.READER_RST_PIN]):
-            io.pinMode(idx, io.OUTPUT)
-            idx = idx + 1
+        Controller.available_pins = [self.LED_CS_PIN] + Controller.available_pins
+        Controller.available_pins = [self.READER_RST_PIN_1, self.READER_RST_PIN_2] + Controller.available_pins
+        Controller.available_pins = [self.READER_CS_PIN] + Controller.available_pins
         self.mutex = threading.Lock()
         self.spi = None
-        self.led_cs = None
-        self.reader_rst = None
-        self.reader_cs = None
+        self.led_cs = Controller.alloc_pin(self.LED_CS_PIN, OUTPUT)
+        self.reader_rst = Controller.alloc_pin(self.READER_RST_PIN_1, OUTPUT)
+        self.reader_rst_2 = Controller.alloc_pin(self.READER_RST_PIN_2, OUTPUT)
+        #self.reader_cs = Controller.alloc_pin(self.READER_CS_PIN, OUTPUT)
 
     def open(self, spi_bus, spi_device, max_speed_hz):
         """ Open SPI bus
@@ -50,9 +48,9 @@ class NanoPiSpi(object):
         :return:
         """
         if value == 1:
-            io.digitalWrite(0, io.HIGH)
+            self.led_cs.set()
         if value == 0:
-            io.digitalWrite(0, io.LOW)
+            self.led_cs.reset()
 
     def reader_reset_init(self):
         """
@@ -68,9 +66,11 @@ class NanoPiSpi(object):
         :return:
         """
         if value == 1:
-            io.digitalWrite(1, io.HIGH)
+            self.reader_rst.set()
+            self.reader_rst_2.set()
         if value == 0:
-            io.digitalWrite(1, io.LOW)
+            self.reader_rst.reset()
+            self.reader_rst_2.reset()
 
     def reader_cs_init(self):
         """
@@ -86,9 +86,9 @@ class NanoPiSpi(object):
         :return:
         """
         if value == 1:
-            io.digitalWrite(2, io.HIGH)
+            self.reader_cs.set()
         if value == 0:
-            io.digitalWrite(2, io.LOW)
+            self.reader_cs.reset()
 
     def write(self, data):
         self.mutex.acquire()

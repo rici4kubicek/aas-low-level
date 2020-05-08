@@ -2,7 +2,7 @@
 import os
 import fnmatch
 from PIL import ImageFont
-path = './static/'
+path = 'static/'
 
 files = os.listdir(path)
 pattern = "*.ttf"

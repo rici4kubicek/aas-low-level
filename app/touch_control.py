@@ -1,7 +1,7 @@
 import logging
 import time
 import Adafruit_GPIO.I2C as I2C
-from .gpio import Controller, INPUT, OUTPUT, FALLING, EPOLL_TIMEOUT
+from app.gpio import Controller, INPUT, OUTPUT, FALLING, EPOLL_TIMEOUT
 
 
 class TouchControl(object):
