@@ -153,6 +153,7 @@ class AasSpi(Aas):
         self.write_data_flag = False
         self.write_multi_data_flag = False
         self.old_read_data = []
+        self.count_of_pages_to_write = 0
 
         self.nano_pi.led_cs_init()
         self.nano_pi.led_cs_set(1)
@@ -172,6 +173,65 @@ class AasSpi(Aas):
         self.nano_pi.reader_reset_set(1)
 
         self.mifare_reader = MFRC522(self.nano_pi)
+
+    def publish_write_status(self, status, sector):
+        data = {"write": {"sector": 0, "status": "NONE"}}
+        data["write"]["sector"] = sector
+        data["write"]["status"] = status
+        super().publish(LL_READER_STATUS_TOPIC, json.dumps(data))
+
+
+    def write_multi_to_tag(self, uid):
+        uid[0] = uid[1]
+        uid[1] = uid[2]
+        uid[2] = uid[3]
+
+        self.mifare_reader.sak(uid)
+
+        (status, uid2) = self.mifare_reader.anticoll(2)
+        uid[3] = uid2[0]
+        uid[4] = uid2[1]
+        uid.append(uid2[2])
+        uid.append(uid2[3])
+        self.mifare_reader.select_tag2(uid)
+        super().logger_debug(
+            "Card UID: {}, {}, {}, {} write multi data to sectors {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
+                                                                             hex(uid[3]),
+                                                                             self.write_data["write_multi"]))
+        i = 0
+        while i < self.count_of_pages_to_write:
+            status = self.mifare_reader.write(self.write_data["write_multi"][i]["sector"], self.write_data["write_multi"][i]["data"])
+            if status == self.mifare_reader.MI_OK:
+                self.publish_write_status("OK", self.write_data["write_multi"][i]["sector"])
+                i = i + 1
+            else:
+                self.publish_write_status("NOK", self.write_data["write_multi"][i]["sector"])
+
+        if i == self.count_of_pages_to_write:
+            self.write_multi_data_flag = False
+
+    def write_to_tag(self, uid):
+        uid[0] = uid[1]
+        uid[1] = uid[2]
+        uid[2] = uid[3]
+
+        self.mifare_reader.sak(uid)
+
+        (status, uid2) = self.mifare_reader.anticoll(2)
+        uid[3] = uid2[0]
+        uid[4] = uid2[1]
+        uid.append(uid2[2])
+        uid.append(uid2[3])
+        self.mifare_reader.select_tag2(uid)
+        super().logger_debug(
+            "Card UID: {}, {}, {}, {} write data to sector".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
+                                                                   hex(uid[3]), self.write_data["sector"]))
+        status = self.mifare_reader.write(self.write_data["sector"], self.write_data["data"])
+        if status == self.mifare_reader.MI_OK:
+            self.publish_write_status("OK", self.write_data["sector"])
+            self.write_data_flag = False
+        else:
+            self.publish_write_status("NOK", self.write_data["sector"])
 
     def reader_loop(self):
         card_data = {}
@@ -206,12 +266,10 @@ class AasSpi(Aas):
                     super().publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
                 self.old_read_data = card_data["data"]
             elif self.write_data_flag:
-                #write_to_tag(uid, self.mifare_reader, aas)
-                pass
+                self.write_to_tag(uid)
             elif self.write_multi_data_flag:
                 super().logger_debug("Write multi data")
-                #write_multi_to_tag(uid, mifare_reader, aas)
-                pass
+                self.write_multi_to_tag(uid)
 
             self.mifare_reader.stop_crypto1()
             (status, TagType) = self.mifare_reader.request(self.mifare_reader.PICC_HALT)
@@ -252,14 +310,14 @@ def on_write(moqs, obj, msg):
         if "write" in data:
             obj.spi.write_data["sector"] = data["write"][0]["sector"]
             obj.spi.write_data["data"] = data["write"][0]["data"]
-            obj.logger.debug(obj.spi.write_data)
+            obj.logger_debug(obj.spi.write_data)
             obj.spi.write_data_flag = True
             obj.spi.write_multi_data_flag = False
             obj.spi.count_of_pages_to_write = len(data["write"])
         elif "write_multi" in data:
             print(data["write_multi"])
             obj.spi.write_data["write_multi"] = data["write_multi"]
-            obj.logger.debug(obj.spi.write_data)
+            obj.logger_debug(obj.spi.write_data)
             obj.spi.write_data_flag = False
             obj.spi.write_multi_data_flag = True
             obj.spi.count_of_pages_to_write = len(data["write_multi"])
@@ -346,66 +404,6 @@ def tag_parse_version(data):
                  "tag_vendor": _tag_vendor_to_string(data["vendor_id"]), "tag_protocol": data["protocol_type"],
                  "user_memory_offset": _tag_user_memory_offset(data)}
     return back_data
-
-
-def publish_write_status(aas, status, sector, _mqtt):
-    data = {"write": {"sector": 0, "status": "NONE"}}
-    data["write"]["sector"] = sector
-    data["write"]["status"] = status
-    _mqtt.publish(LL_READER_STATUS_TOPIC, json.dumps(data))
-
-
-def write_to_tag(uid, reader, aas):
-    uid[0] = uid[1]
-    uid[1] = uid[2]
-    uid[2] = uid[3]
-
-    SAK1 = reader.sak(uid)
-
-    (Status, uid2) = reader.anticoll(2)
-    uid[3] = uid2[0]
-    uid[4] = uid2[1]
-    uid.append(uid2[2])
-    uid.append(uid2[3])
-    reader.select_tag2(uid)
-    aas.logger.debug(
-        "Card UID: {}, {}, {}, {} write data to sector".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
-                                                               hex(uid[3]), aas.write_data["sector"]))
-    status = reader.write(aas.write_data["sector"], aas.write_data["data"])
-    if status == reader.MI_OK:
-        publish_write_status(aas, "OK", aas.write_data["sector"], aas.mqtt)
-        aas.write_data_flag = False
-    else:
-        publish_write_status(aas, "NOK", aas.write_data["sector"], aas.mqtt)
-
-
-def write_multi_to_tag(uid, reader, aas):
-    uid[0] = uid[1]
-    uid[1] = uid[2]
-    uid[2] = uid[3]
-
-    SAK1 = reader.sak(uid)
-
-    (Status, uid2) = reader.anticoll(2)
-    uid[3] = uid2[0]
-    uid[4] = uid2[1]
-    uid.append(uid2[2])
-    uid.append(uid2[3])
-    reader.select_tag2(uid)
-    aas.logger.debug(
-        "Card UID: {}, {}, {}, {} write multi data to sectors {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
-                                                                         hex(uid[3]), aas.write_data["write_multi"]))
-    i = 0
-    while i < aas.count_of_pages_to_write:
-        status = reader.write(aas.write_data["write_multi"][i]["sector"], aas.write_data["write_multi"][i]["data"])
-        if status == reader.MI_OK:
-            publish_write_status(aas, "OK", aas.write_data["write_multi"][i]["sector"], aas.mqtt)
-            i = i + 1
-        else:
-            publish_write_status(aas, "NOK", aas.write_data["write_multi"][i]["sector"], aas.mqtt)
-
-    if i == aas.count_of_pages_to_write:
-        aas.write_multi_data_flag = False
 
 
 def main():
