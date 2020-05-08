@@ -366,7 +366,6 @@ def on_connect(mqtt_client, obj, flags, rc):
                 retry_time = 5
 
 
-
 def main():
     aas = Aas()
     aas.logger().setLevel(logging.DEBUG)
@@ -415,7 +414,7 @@ def main():
 
         aas.spi.led_loop()
 
-        aas.i2c.touch.wait_events(0.01)
+        aas.i2c.touch.wait_events(0.05)
 
 
 def touch_handle():
