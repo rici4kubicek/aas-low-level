@@ -1,2 +1,0 @@
-spidev
-paho-mqtt
