@@ -7,17 +7,19 @@ from array import array
 class NanoPiSpi(object):
 
     LED_CS_PIN = 6
-    READER_RST_PIN = 7
+    READER_RST_PIN_1 = 7
+    READER_RST_PIN_2 = 363
     READER_CS_PIN = 67
 
     def __init__(self):
         Controller.available_pins = [self.LED_CS_PIN] + Controller.available_pins
-        Controller.available_pins = [self.READER_RST_PIN] + Controller.available_pins
+        Controller.available_pins = [self.READER_RST_PIN_1, self.READER_RST_PIN_2] + Controller.available_pins
         Controller.available_pins = [self.READER_CS_PIN] + Controller.available_pins
         self.mutex = threading.Lock()
         self.spi = None
         self.led_cs = Controller.alloc_pin(self.LED_CS_PIN, OUTPUT)
-        self.reader_rst = Controller.alloc_pin(self.READER_RST_PIN, OUTPUT)
+        self.reader_rst = Controller.alloc_pin(self.READER_RST_PIN_1, OUTPUT)
+        self.reader_rst_2 = Controller.alloc_pin(self.READER_RST_PIN_2, OUTPUT)
         #self.reader_cs = Controller.alloc_pin(self.READER_CS_PIN, OUTPUT)
 
     def open(self, spi_bus, spi_device, max_speed_hz):
@@ -65,8 +67,10 @@ class NanoPiSpi(object):
         """
         if value == 1:
             self.reader_rst.set()
+            self.reader_rst_2.set()
         if value == 0:
             self.reader_rst.reset()
+            self.reader_rst_2.reset()
 
     def reader_cs_init(self):
         """
