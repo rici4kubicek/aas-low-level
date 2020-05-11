@@ -18,7 +18,6 @@ from app.nanopi_spi import NanoPiSpi
 from app.apa102 import APA102
 from app.mfrc522 import MFRC522
 from app.tag_helper import *
-import math
 
 __author__ = "Richard Kubicek"
 __copyright__ = "Copyright 2019, FEEC BUT Brno"
@@ -67,11 +66,11 @@ class Aas:
 class AasI2C:
     def __init__(self):
         self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus='0')
-        self.width_ = self.display.width
-        self.height_ = self.display.height
-        self.image = Image.new('1', (self.width_, self.height_))
+        self.width = self.display.width
+        self.height = self.display.height
+        self.image = Image.new('1', (self.width, self.height))
         self.draw = ImageDraw.Draw(self.image)
-        self.draw.rectangle((0, 0, self.width_, self.height_), outline=0, fill=0)
+        self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
         self.fonts = {}
         self.write_text = {}
         self.display_command = None
@@ -100,7 +99,7 @@ class AasI2C:
     def clear_display(self):
         if self.display_ready:
             self.display.clear()
-            self.draw.rectangle((0, 0, self.width_, self.height_), outline=0, fill=0)
+            self.draw.rectangle((0, 0, self.width, self.height), outline=0, fill=0)
             self.display.display()
             self.clear_display_buffer()
 
@@ -145,67 +144,68 @@ class AasI2C:
             self.display_begin()
 
 
-class ScrollText(AasI2C):
-    def __init__(self):
-        self.amplitude = super().height_ / 4
-        self.offset = self.height_ / 2 - 4
+class ScrollText:
+    def __init__(self, _i2c):
+        self.i2c = _i2c
+        self.amplitude = self.i2c.height / 4
+        self.offset = self.i2c.height / 2 - 4
         self.velocity = -2
-        self.start_position = self.weight_
-        self.text = ""
-        self.font = ""
+        self.start_position = self.i2c.width
+        self._text = "Text"
+        self._font = "Arial-10"
         self.pos = self.start_position
         self.max_width = 0
         self._x = 0
 
     @property
     def text(self):
-        return self.text
+        return self._text
 
     @text.setter
     def text(self, _txt):
-        self.text = _txt
+        self._text = _txt
 
     @property
     def font(self):
-        return self.font
+        return self._font
 
     @font.setter
-    def font(self, _font):
-        self.font = _font
+    def font(self, fnt):
+        self._font = fnt
 
     def prepare(self):
-        max, unused = super().draw.textsize(self.text, super().fonts[self.font])
+        max, unused = self.i2c.draw.textsize(self._text, self.i2c.fonts[self._font])
         self.max_width = max
-        # Clear image buffer by drawing a black filled box.
-        super().draw.rectangle((0, 0, super().width_, super().height_), outline=0, fill=0)
         # Enumerate characters and draw them offset vertically based on a sine wave.
         self._x = self.pos
+        self.pos = self.start_position
 
     def run(self):
-        for i, c in enumerate(self.text):
+        # Clear image buffer by drawing a black filled box.
+        self.i2c.draw.rectangle((0, 0, self.i2c.width, self.i2c.height), outline=0, fill=0)
+        self._x = self.pos
+        for i, c in enumerate(self._text):
             # Stop drawing if off the right side of screen.
-            if self._x > super().width_:
+            if self._x > self.i2c.width:
                 break
             # Calculate width but skip drawing if off the left side of screen.
             if self._x < -10:
-                char_width, char_height = super().draw.textsize(c, font=super().fonts[self.font])
+                char_width, char_height = self.i2c.draw.textsize(c, font=self.i2c.fonts[self._font])
                 self._x += char_width
                 continue
-            # Calculate offset from sine wave.
-            y = self.offset + math.floor(self.amplitude * math.sin(self._x / float(super().width_) * 2.0 * math.pi))
             # Draw text.
-            super().draw.text((self._x, y), c, font=super().fonts[self.font], fill=255)
+            self.i2c.draw.text((self._x, 10), c, font=self.i2c.fonts[self._font], fill=255)
             # Increment x position based on chacacter width.
-            char_width, char_height = super().draw.textsize(c, font=super().fonts[self.font])
+            char_width, char_height = self.i2c.draw.textsize(c, font=self.i2c.fonts[self._font])
             self._x += char_width
         # Draw the image buffer.
-        super().display.image(super().image)
-        super().display.display()
+        self.i2c.display.image(self.i2c.image)
+        self.i2c.display.display()
         # Move position for next frame.
         self.pos += self.velocity
         # Start over if text has scrolled completely off left side of screen.
-        if self.pos < -self.maxwidth:
-            pos = self.start_position
+        if self.pos < -self.max_width:
+            self.pos = self.start_position
 
 
 class AasSpi:
@@ -471,14 +471,11 @@ def main():
 
     aas.mqtt.loop_start()
 
-    scroll = ScrollText()
+    scroll = ScrollText(aas.i2c)
 
     scroll.font = "Arial-12"
     scroll.text = "zkouska scroll"
     scroll.prepare()
-    while True:
-        scroll.run()
-        time.sleep(0.1)
 
     while True:
         key = aas.i2c.touch.read_active_key()
@@ -491,6 +488,7 @@ def main():
 
         aas.spi.led_loop()
 
+        scroll.run()
         aas.i2c.touch.wait_events(0.05)
 
 
