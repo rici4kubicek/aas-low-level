@@ -43,8 +43,7 @@ LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
 
 
 class Aas:
-    _mqtt = mqtt_client.Client()
-    _logger = logging.getLogger()
+
 
     def __init__(self):
         self.i2c = AasI2C()
@@ -52,25 +51,18 @@ class Aas:
         self.i2c.on_event = self.handle_event
         self.spi.on_event = self.handle_event
         self.spi.log_debug = self.logger_debug
+        self.logger = logging.getLogger()
+        self.mqtt = mqtt_client.Client()
         self.mqtt_ready = False
 
-    def publish(self, topic, data):
-        self._mqtt.publish(topic, data)
-
-    def mqtt(self):
-        return self._mqtt
-
-    def logger(self):
-        return self._logger
-
     def logger_debug(self, _str):
-        self._logger.debug(_str)
+        self.logger.debug(_str)
 
     def logger_error(self, _str):
-        self._logger.error(_str)
+        self.logger.error(_str)
 
     def handle_event(self, topic, message):
-        self._mqtt.publish(topic, message)
+        self.mqtt.publish(topic, message)
 
 
 class AasI2C:
@@ -383,7 +375,7 @@ def on_connect(mqtt_client, obj, flags, rc):
 
 def main():
     aas = Aas()
-    aas.logger().setLevel(logging.DEBUG)
+    aas.logger.setLevel(logging.DEBUG)
     fh = logging.FileHandler("/var/log/aas-low-level.txt")
     fh.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
@@ -391,24 +383,23 @@ def main():
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)
-    aas.logger().addHandler(fh)
-    aas.logger().addHandler(ch)
+    aas.logger.addHandler(fh)
+    aas.logger.addHandler(ch)
 
-    aas.logger().info("Core: ===================== Application start ========================")
-    aas.logger().info("Script version: {}".format(__version__))
+    aas.logger.info("Core: ===================== Application start ========================")
+    aas.logger.info("Script version: {}".format(__version__))
 
-    aas.mqtt().connect("localhost")
-    aas.mqtt().publish(LL_I2C_MSG_TOPIC, "I2C: prepared")
-    aas.mqtt().on_connect = on_connect
-    aas.mqtt().user_data_set(aas)
-    aas.mqtt().message_callback_add(LL_DISPLAY_TOPIC, on_display)
-    aas.mqtt().message_callback_add(LL_LED_TOPIC, on_leds)
-    aas.mqtt().message_callback_add(LL_READER_DATA_WRITE_TOPIC, on_write)
+    aas.mqtt.connect("localhost")
+    aas.mqtt.on_connect = on_connect
+    aas.mqtt.user_data_set(aas)
+    aas.mqtt.message_callback_add(LL_DISPLAY_TOPIC, on_display)
+    aas.mqtt.message_callback_add(LL_LED_TOPIC, on_leds)
+    aas.mqtt.message_callback_add(LL_READER_DATA_WRITE_TOPIC, on_write)
 
     aas.i2c.display_begin()
 
     if not aas.i2c.display_ready:
-        aas.mqtt().publish(LL_I2C_MSG_TOPIC, "I2C: display is not ready")
+        aas.mqtt.publish(LL_I2C_MSG_TOPIC, "I2C: display is not ready")
 
     aas.i2c.load_fonts(10)
     aas.i2c.load_fonts(12)
@@ -416,7 +407,7 @@ def main():
 
     aas.i2c.init_screen()
 
-    aas.mqtt().loop_start()
+    aas.mqtt.loop_start()
 
     while True:
         key = aas.i2c.touch.read_active_key()
