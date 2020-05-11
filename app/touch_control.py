@@ -18,6 +18,7 @@ class TouchControl(object):
     TOUCH_CMD_KEY_STATUS = 0x03
     TOUCH_CMD_NEGATIVE_TRESHOLD = 0x20
     TOUCH_CMD_REG_AVEASK0_OFSSET = 0x27
+    TOUCH_CMD_FAST_MAX_CAL_GUARD = 0x35
     TOUCH_CMD_MAX_ON_DURATION = 0x37
     TOUCH_CMD_CALIBRATE = 0x38
     TOUCH_CMD_RESET = 0x39
@@ -48,12 +49,14 @@ class TouchControl(object):
         self._i2c.write8(self.TOUCH_CMD_CALIBRATE, 0xff)
         while self._i2c.readU8(self.TOUCH_CMD_DETECTION_STATUS) & 0x80:
             self.logger.debug("init: calibration in progress ...")
-        self._i2c.write8(self.TOUCH_CMD_MAX_ON_DURATION, 0x0)
+        self._i2c.write8(self.TOUCH_CMD_MAX_ON_DURATION, 100)
         if chip_id == self.TOUCH_CHIP_ID:
             self._init_ok = True
+        self._i2c.write8(self.TOUCH_CMD_FAST_MAX_CAL_GUARD, 0x6)
+        time.sleep(0.1)
         # increase sensitivity
         for i in range(0, 7):
-            self._i2c.write8(self.TOUCH_CMD_NEGATIVE_TRESHOLD + i, 15)
+            self._i2c.write8(self.TOUCH_CMD_NEGATIVE_TRESHOLD + i, 80)
             time.sleep(0.1)
 
     def _read_state(self, number, state):
@@ -72,7 +75,7 @@ class TouchControl(object):
             if self._key_hit:
                 read_status = self._i2c.readU8(self.TOUCH_CMD_DETECTION_STATUS)
                 if read_status & 0x40:
-                    print("overflow")
+                    self.logger.debug("overflow")
                 button_number = self._i2c.readU8(self.TOUCH_CMD_KEY_STATUS)
                 self._key_hit = False
 
@@ -80,6 +83,9 @@ class TouchControl(object):
                 if read_status & self.TOUCH_DETECTION_STATUS_TOUCH_BIT:
                     if button_number == 0:
                         self.logger.error("read_active_address: Read error")
+                        self._i2c.write8(self.TOUCH_CMD_CALIBRATE, 0xff)
+                        while self._i2c.readU8(self.TOUCH_CMD_DETECTION_STATUS) & 0x80:
+                            self.logger.debug("init: calibration in progress ...")
                     return button_number
         return 0
 

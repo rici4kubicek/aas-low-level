@@ -168,7 +168,7 @@ def main():
 
         aas.spi.led_loop()
 
-        aas.i2c.touch.wait_events(0.05)
+        aas.i2c.touch.wait_events(0.1)
 
 
 def touch_handle():
