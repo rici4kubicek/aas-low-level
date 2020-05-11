@@ -68,8 +68,7 @@ class AasI2C:
                 self.fonts[font[:-4] + "-" + str(size) + ""] = ImageFont.truetype("" + path + font + "", size)
 
     def button_pressed_notification(self, _btn):
-        msg = {}
-        msg["button"] = _btn
+        msg = {"button": _btn}
         self.on_event(LL_TOUCH_TOPIC, json.dumps(msg))
 
     def init_screen(self):
