@@ -147,9 +147,8 @@ class AasI2C:
 class ScrollText:
     def __init__(self, _i2c):
         self.i2c = _i2c
-        self.amplitude = self.i2c.height / 4
         self.offset = self.i2c.height / 2 - 4
-        self.velocity = -2
+        self.velocity = -8
         self.start_position = self.i2c.width
         self._text = "Text"
         self._font = "Arial-10"
@@ -184,19 +183,19 @@ class ScrollText:
         # Clear image buffer by drawing a black filled box.
         self.i2c.draw.rectangle((0, 0, self.i2c.width, self.i2c.height), outline=0, fill=0)
         self._x = self.pos
-        for i, c in enumerate(self._text):
+        for idx, character in enumerate(self._text):
             # Stop drawing if off the right side of screen.
             if self._x > self.i2c.width:
                 break
             # Calculate width but skip drawing if off the left side of screen.
             if self._x < -10:
-                char_width, char_height = self.i2c.draw.textsize(c, font=self.i2c.fonts[self._font])
+                char_width, char_height = self.i2c.draw.textsize(character, font=self.i2c.fonts[self._font])
                 self._x += char_width
                 continue
             # Draw text.
-            self.i2c.draw.text((self._x, 10), c, font=self.i2c.fonts[self._font], fill=255)
-            # Increment x position based on chacacter width.
-            char_width, char_height = self.i2c.draw.textsize(c, font=self.i2c.fonts[self._font])
+            self.i2c.draw.text((self._x, 10), character, font=self.i2c.fonts[self._font], fill=255)
+            # Increment x position based on character width.
+            char_width, char_height = self.i2c.draw.textsize(character, font=self.i2c.fonts[self._font])
             self._x += char_width
         # Draw the image buffer.
         self.i2c.display.image(self.i2c.image)
@@ -473,7 +472,7 @@ def main():
 
     scroll = ScrollText(aas.i2c)
 
-    scroll.font = "Arial-12"
+    scroll.font = "Arial-15"
     scroll.text = "zkouska scroll"
     scroll.prepare()
 
