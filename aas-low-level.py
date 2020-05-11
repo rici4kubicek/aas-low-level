@@ -44,31 +44,27 @@ LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
 
 
 class Aas:
-    _mqtt = mqtt_client.Client()
-    _logger = logging.getLogger()
-
     def __init__(self):
         self.i2c = AasI2C()
         self.spi = AasSpi()
+        self.i2c.on_event = self.handle_event
+        self.spi.on_event = self.handle_event
+        self.spi.log_debug = self.logger_debug
+        self.logger = logging.getLogger()
+        self.mqtt = mqtt_client.Client()
         self.mqtt_ready = False
 
-    def publish(self, topic, data):
-        self._mqtt.publish(topic, data)
-
-    def mqtt(self):
-        return self._mqtt
-
-    def logger(self):
-        return self._logger
-
     def logger_debug(self, _str):
-        self._logger.debug(_str)
+        self.logger.debug(_str)
 
     def logger_error(self, _str):
-        self._logger.error(_str)
+        self.logger.error(_str)
+
+    def handle_event(self, topic, message):
+        self.mqtt.publish(topic, message)
 
 
-class AasI2C(Aas):
+class AasI2C:
     def __init__(self):
         self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus='0')
         self.width_ = self.display.width
@@ -81,6 +77,9 @@ class AasI2C(Aas):
         self.display_command = None
         self.display_ready = False
         self.touch = TouchControl(i2c_bus="0")
+
+    def on_event(self, topic, message):
+        pass
 
     def display_begin(self):
         try:
@@ -117,7 +116,7 @@ class AasI2C(Aas):
     def button_pressed_notification(self, _btn):
         msg = {}
         msg["button"] = _btn
-        super().publish(LL_TOUCH_TOPIC, json.dumps(msg))
+        self.on_event(LL_TOUCH_TOPIC, json.dumps(msg))
 
     def init_screen(self):
         cmd = "hostname -I | cut -d\' \' -f1"
@@ -209,7 +208,7 @@ class ScrollText(AasI2C):
             pos = self.start_position
 
 
-class AasSpi(Aas):
+class AasSpi:
     def __init__(self):
         self.nano_pi = NanoPiSpi()
         self.led = APA102(4)
@@ -239,11 +238,17 @@ class AasSpi(Aas):
 
         self.mifare_reader = MFRC522(self.nano_pi)
 
+    def on_event(self, topic, message):
+        pass
+
+    def log_debug(self, message):
+        pass
+
     def publish_write_status(self, status, sector):
         data = {"write": {"sector": 0, "status": "NONE"}}
         data["write"]["sector"] = sector
         data["write"]["status"] = status
-        super().publish(LL_READER_STATUS_TOPIC, json.dumps(data))
+        self.on_event(LL_READER_STATUS_TOPIC, json.dumps(data))
 
     def write_multi_to_tag(self, uid):
         uid[0] = uid[1]
@@ -258,7 +263,7 @@ class AasSpi(Aas):
         uid.append(uid2[2])
         uid.append(uid2[3])
         self.mifare_reader.select_tag2(uid)
-        super().logger_debug(
+        self.log_debug(
             "Card UID: {}, {}, {}, {} write multi data to sectors {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
                                                                              hex(uid[3]),
                                                                              self.write_data["write_multi"]))
@@ -287,7 +292,7 @@ class AasSpi(Aas):
         uid.append(uid2[2])
         uid.append(uid2[3])
         self.mifare_reader.select_tag2(uid)
-        super().logger_debug(
+        self.log_debug(
             "Card UID: {}, {}, {}, {} write data to sector".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
                                                                    hex(uid[3]), self.write_data["sector"]))
         status = self.mifare_reader.write(self.write_data["sector"], self.write_data["data"])
@@ -304,8 +309,8 @@ class AasSpi(Aas):
 
         # If a card is found
         if status == self.mifare_reader.MI_OK:
-            super().publish(LL_READER_TOPIC, "Some card detected")
-            super().logger_debug("CARD: card detected")
+            self.on_event(LL_READER_TOPIC, "Some card detected")
+            self.log_debug("CARD: card detected")
             card_data["timestamp"] = time.time()
 
         # Get the UID of the card
@@ -314,7 +319,7 @@ class AasSpi(Aas):
         # If we have the UID, continue
         if status == self.mifare_reader.MI_OK:
             if not self.write_data_flag and not self.write_multi_data_flag:
-                super().logger_debug(
+                self.log_debug(
                     "Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
                 self.mifare_reader.select_tag(uid)
                 card_data["data"], state = self.mifare_reader.dump_ultralight(uid)
@@ -327,12 +332,12 @@ class AasSpi(Aas):
                 data = self.mifare_reader.get_version()
                 card_data["tag"] = tag_parse_version(data)
                 if self.old_read_data != card_data["data"]:
-                    super().publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
+                    self.on_event(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
                 self.old_read_data = card_data["data"]
             elif self.write_data_flag:
                 self.write_to_tag(uid)
             elif self.write_multi_data_flag:
-                super().logger_debug("Write multi data")
+                self.log_debug("Write multi data")
                 self.write_multi_to_tag(uid)
 
             self.mifare_reader.stop_crypto1()
@@ -415,9 +420,9 @@ def on_display(moqs, obj, msg):
 def on_connect(mqtt_client, obj, flags, rc):
     if rc == 0:
         obj.mqtt_ready = True
-        obj.mqtt().subscribe(LL_DISPLAY_TOPIC)
-        obj.mqtt().subscribe(LL_LED_TOPIC)
-        obj.mqtt().subscribe(LL_READER_DATA_WRITE_TOPIC)
+        obj.mqtt.subscribe(LL_DISPLAY_TOPIC)
+        obj.mqtt.subscribe(LL_LED_TOPIC)
+        obj.mqtt.subscribe(LL_READER_DATA_WRITE_TOPIC)
     else:
         obj.mqtt_ready = 0
         retry_time = 2
@@ -432,7 +437,7 @@ def on_connect(mqtt_client, obj, flags, rc):
 
 def main():
     aas = Aas()
-    aas.logger().setLevel(logging.DEBUG)
+    aas.logger.setLevel(logging.DEBUG)
     fh = logging.FileHandler("/var/log/aas-low-level.txt")
     fh.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
@@ -440,24 +445,23 @@ def main():
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     fh.setFormatter(formatter)
     ch.setFormatter(formatter)
-    aas.logger().addHandler(fh)
-    aas.logger().addHandler(ch)
+    aas.logger.addHandler(fh)
+    aas.logger.addHandler(ch)
 
-    aas.logger().info("Core: ===================== Application start ========================")
-    aas.logger().info("Script version: {}".format(__version__))
+    aas.logger.info("Core: ===================== Application start ========================")
+    aas.logger.info("Script version: {}".format(__version__))
 
-    aas.mqtt().connect("localhost")
-    aas.mqtt().publish(LL_I2C_MSG_TOPIC, "I2C: prepared")
-    aas.mqtt().on_connect = on_connect
-    aas.mqtt().user_data_set(aas)
-    aas.mqtt().message_callback_add(LL_DISPLAY_TOPIC, on_display)
-    aas.mqtt().message_callback_add(LL_LED_TOPIC, on_leds)
-    aas.mqtt().message_callback_add(LL_READER_DATA_WRITE_TOPIC, on_write)
+    aas.mqtt.connect("localhost")
+    aas.mqtt.on_connect = on_connect
+    aas.mqtt.user_data_set(aas)
+    aas.mqtt.message_callback_add(LL_DISPLAY_TOPIC, on_display)
+    aas.mqtt.message_callback_add(LL_LED_TOPIC, on_leds)
+    aas.mqtt.message_callback_add(LL_READER_DATA_WRITE_TOPIC, on_write)
 
     aas.i2c.display_begin()
 
     if not aas.i2c.display_ready:
-        aas.mqtt().publish(LL_I2C_MSG_TOPIC, "I2C: display is not ready")
+        aas.mqtt.publish(LL_I2C_MSG_TOPIC, "I2C: display is not ready")
 
     aas.i2c.load_fonts(10)
     aas.i2c.load_fonts(12)
@@ -465,7 +469,7 @@ def main():
 
     aas.i2c.init_screen()
 
-    aas.mqtt().loop_start()
+    aas.mqtt.loop_start()
 
     scroll = ScrollText()
 
