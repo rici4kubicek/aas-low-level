@@ -49,6 +49,9 @@ class Aas:
     def __init__(self):
         self.i2c = AasI2C()
         self.spi = AasSpi()
+        self.i2c.on_event = self.handle_event
+        self.spi.on_event = self.handle_event
+        self.spi.log_debug = self.logger_debug
         self.mqtt_ready = False
 
     def publish(self, topic, data):
@@ -66,8 +69,11 @@ class Aas:
     def logger_error(self, _str):
         self._logger.error(_str)
 
+    def handle_event(self, topic, message):
+        self._mqtt.publish(topic, message)
 
-class AasI2C(Aas):
+
+class AasI2C:
     def __init__(self):
         self.display = Adafruit_SSD1306.SSD1306_128_32(rst=None, i2c_bus='0')
         self._width = self.display.width
@@ -80,6 +86,9 @@ class AasI2C(Aas):
         self.display_command = None
         self.display_ready = False
         self.touch = TouchControl(i2c_bus="0")
+
+    def on_event(self, topic, message):
+        pass
 
     def display_begin(self):
         try:
@@ -116,7 +125,7 @@ class AasI2C(Aas):
     def button_pressed_notification(self, _btn):
         msg = {}
         msg["button"] = _btn
-        super().publish(LL_TOUCH_TOPIC, json.dumps(msg))
+        self.on_event(LL_TOUCH_TOPIC, json.dumps(msg))
 
     def init_screen(self):
         cmd = "hostname -I | cut -d\' \' -f1"
@@ -145,7 +154,7 @@ class AasI2C(Aas):
             self.display_begin()
 
 
-class AasSpi(Aas):
+class AasSpi:
     def __init__(self):
         self.nano_pi = NanoPiSpi()
         self.led = APA102(4)
@@ -175,11 +184,17 @@ class AasSpi(Aas):
 
         self.mifare_reader = MFRC522(self.nano_pi)
 
+    def on_event(self, topic, message):
+        pass
+
+    def log_debug(self, message):
+        pass
+
     def publish_write_status(self, status, sector):
         data = {"write": {"sector": 0, "status": "NONE"}}
         data["write"]["sector"] = sector
         data["write"]["status"] = status
-        super().publish(LL_READER_STATUS_TOPIC, json.dumps(data))
+        self.on_event(LL_READER_STATUS_TOPIC, json.dumps(data))
 
     def write_multi_to_tag(self, uid):
         uid[0] = uid[1]
@@ -194,7 +209,7 @@ class AasSpi(Aas):
         uid.append(uid2[2])
         uid.append(uid2[3])
         self.mifare_reader.select_tag2(uid)
-        super().logger_debug(
+        self.log_debug(
             "Card UID: {}, {}, {}, {} write multi data to sectors {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
                                                                              hex(uid[3]),
                                                                              self.write_data["write_multi"]))
@@ -223,7 +238,7 @@ class AasSpi(Aas):
         uid.append(uid2[2])
         uid.append(uid2[3])
         self.mifare_reader.select_tag2(uid)
-        super().logger_debug(
+        self.log_debug(
             "Card UID: {}, {}, {}, {} write data to sector".format(hex(uid[0]), hex(uid[1]), hex(uid[2]),
                                                                    hex(uid[3]), self.write_data["sector"]))
         status = self.mifare_reader.write(self.write_data["sector"], self.write_data["data"])
@@ -240,8 +255,8 @@ class AasSpi(Aas):
 
         # If a card is found
         if status == self.mifare_reader.MI_OK:
-            super().publish(LL_READER_TOPIC, "Some card detected")
-            super().logger_debug("CARD: card detected")
+            self.on_event(LL_READER_TOPIC, "Some card detected")
+            self.log_debug("CARD: card detected")
             card_data["timestamp"] = time.time()
 
         # Get the UID of the card
@@ -250,7 +265,7 @@ class AasSpi(Aas):
         # If we have the UID, continue
         if status == self.mifare_reader.MI_OK:
             if not self.write_data_flag and not self.write_multi_data_flag:
-                super().logger_debug(
+                self.log_debug(
                     "Card read UID: {}, {}, {}, {}".format(hex(uid[0]), hex(uid[1]), hex(uid[2]), hex(uid[3])))
                 self.mifare_reader.select_tag(uid)
                 card_data["data"], state = self.mifare_reader.dump_ultralight(uid)
@@ -263,12 +278,12 @@ class AasSpi(Aas):
                 data = self.mifare_reader.get_version()
                 card_data["tag"] = tag_parse_version(data)
                 if self.old_read_data != card_data["data"]:
-                    super().publish(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
+                    self.on_event(LL_READER_DATA_READ_TOPIC, json.dumps(card_data))
                 self.old_read_data = card_data["data"]
             elif self.write_data_flag:
                 self.write_to_tag(uid)
             elif self.write_multi_data_flag:
-                super().logger_debug("Write multi data")
+                self.log_debug("Write multi data")
                 self.write_multi_to_tag(uid)
 
             self.mifare_reader.stop_crypto1()
