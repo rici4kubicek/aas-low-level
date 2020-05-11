@@ -16,6 +16,7 @@ class TouchControl(object):
     TOUCH_CMD_CHIP_ID = 0x00
     TOUCH_CMD_DETECTION_STATUS = 0x02
     TOUCH_CMD_KEY_STATUS = 0x03
+    TOUCH_CMD_NEGATIVE_TRESHOLD = 0x20
     TOUCH_CMD_REG_AVEASK0_OFSSET = 0x27
     TOUCH_CMD_MAX_ON_DURATION = 0x37
     TOUCH_CMD_CALIBRATE = 0x38
@@ -50,6 +51,10 @@ class TouchControl(object):
         self._i2c.write8(self.TOUCH_CMD_MAX_ON_DURATION, 0x0)
         if chip_id == self.TOUCH_CHIP_ID:
             self._init_ok = True
+        # increase sensitivity
+        for i in range(0, 7):
+            self._i2c.write8(self.TOUCH_CMD_NEGATIVE_TRESHOLD + i, 15)
+            time.sleep(0.1)
 
     def _read_state(self, number, state):
         if self._init_ok:
@@ -66,6 +71,8 @@ class TouchControl(object):
         if self._init_ok:
             if self._key_hit:
                 read_status = self._i2c.readU8(self.TOUCH_CMD_DETECTION_STATUS)
+                if read_status & 0x40:
+                    print("overflow")
                 button_number = self._i2c.readU8(self.TOUCH_CMD_KEY_STATUS)
                 self._key_hit = False
 
