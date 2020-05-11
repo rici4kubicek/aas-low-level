@@ -43,8 +43,6 @@ LL_LED_TOPIC = LL_SPI_TOPIC + "/led"
 
 
 class Aas:
-
-
     def __init__(self):
         self.i2c = AasI2C()
         self.spi = AasSpi()
@@ -358,9 +356,9 @@ def on_display(moqs, obj, msg):
 def on_connect(mqtt_client, obj, flags, rc):
     if rc == 0:
         obj.mqtt_ready = True
-        obj.mqtt().subscribe(LL_DISPLAY_TOPIC)
-        obj.mqtt().subscribe(LL_LED_TOPIC)
-        obj.mqtt().subscribe(LL_READER_DATA_WRITE_TOPIC)
+        obj.mqtt.subscribe(LL_DISPLAY_TOPIC)
+        obj.mqtt.subscribe(LL_LED_TOPIC)
+        obj.mqtt.subscribe(LL_READER_DATA_WRITE_TOPIC)
     else:
         obj.mqtt_ready = 0
         retry_time = 2
