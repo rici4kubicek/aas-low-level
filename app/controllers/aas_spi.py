@@ -71,7 +71,8 @@ class AasSpi:
                                                                              self.write_data["write_multi"]))
         i = 0
         while i < self.count_of_pages_to_write:
-            status = self.mifare_reader.write(self.write_data["write_multi"][i]["sector"], self.write_data["write_multi"][i]["data"])
+            status = self.mifare_reader.write(self.write_data["write_multi"][i]["sector"],
+                                              self.write_data["write_multi"][i]["data"])
             if status == self.mifare_reader.MI_OK:
                 self.publish_write_status("OK", self.write_data["write_multi"][i]["sector"])
                 i = i + 1
