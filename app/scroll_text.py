@@ -15,6 +15,9 @@ class ScrollText:
         self.allow = False
         self._prepared = False
 
+    def set_send(self):
+        pass
+
     @property
     def text(self):
         return self._text
@@ -45,6 +48,7 @@ class ScrollText:
         if not self._prepared:
             self.prepare()
         if self._prepared and self.allow:
+            self.set_send()
             # Clear image buffer by drawing a black filled box.
             self.i2c.draw.rectangle((0, self.y_pos, self.i2c.width, self.y_pos + self._text_height), outline=0, fill=0)
             self._x = self.pos

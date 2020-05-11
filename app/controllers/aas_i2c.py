@@ -2,6 +2,7 @@ import Adafruit_SSD1306
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
+from PIL import ImageChops
 from app.touch_control import TouchControl
 from app.scroll_text import ScrollText
 from app import *
@@ -25,6 +26,11 @@ class AasI2C:
         self.display_ready = False
         self.touch = TouchControl(i2c_bus="0")
         self.scroll = ScrollText(self)
+        self._send = False
+        self.scroll.set_send = self.set_send
+
+    def set_send(self):
+        self._send = True
 
     def on_event(self, topic, message):
         pass
@@ -78,6 +84,7 @@ class AasI2C:
         self.display.image(self.image)
         self.send_to_display()
         self.scroll.prepare()
+        self._send = False
 
     def display_loop(self):
         if self.display_command == "clear":
@@ -88,6 +95,7 @@ class AasI2C:
             self.draw.text((self.write_text["pos_x"], self.write_text["pos_y"]), self.write_text["text"],
                            font=self.fonts[self.write_text["font"]], fill=255)
             self.clear_display_buffer()
+            self._send = True
         elif self.display_command == "scroll":
             self.scroll.text = self.write_text["text"]
             self.scroll.font = self.write_text["font"]
@@ -95,10 +103,12 @@ class AasI2C:
             self.scroll.allow = True
             self.clear_display_buffer()
 
-        self.scroll.run()
+        if self._send:
+            self.display.image(self.image)
+            self.send_to_display()
+            self._send = False
 
-        self.display.image(self.image)
-        self.send_to_display()
+        self.scroll.run()
 
         if not self.display_ready:
             self.display_begin()
