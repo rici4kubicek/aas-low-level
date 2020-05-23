@@ -158,9 +158,7 @@ def main():
     aas.mqtt.loop_start()
 
     while True:
-        key = aas.i2c.touch.read_active_key()
-        if key:
-            aas.i2c.button_pressed_notification(key)
+        aas.i2c.touch_loop()
 
         aas.i2c.display_loop()
 

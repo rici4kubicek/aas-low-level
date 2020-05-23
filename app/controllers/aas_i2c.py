@@ -111,3 +111,8 @@ class AasI2C:
 
         if not self.display_ready:
             self.display_begin()
+
+    def touch_loop(self):
+        key = self.touch.read_active_key()
+        if key:
+            self.button_pressed_notification(key)
