@@ -35,14 +35,13 @@ class ScrollText:
         self._font = fnt
 
     def prepare(self):
-        if not self._prepared and self.allow:
-            max, unused = self.i2c.draw.textsize(self._text, self.i2c.fonts[self._font])
-            self._text_width, self._text_height = self.i2c.fonts[self._font].getsize(self._text)
-            self.max_width = max
-            # Enumerate characters and draw them offset vertically based on a sine wave.
-            self._x = self.pos
-            self.pos = self.start_position
-            self._prepared = True
+        max, unused = self.i2c.draw.textsize(self._text, self.i2c.fonts[self._font])
+        self._text_width, self._text_height = self.i2c.fonts[self._font].getsize(self._text)
+        self.max_width = max
+        # Enumerate characters and draw them offset vertically based on a sine wave.
+        self._x = self.pos
+        self.pos = self.start_position
+        self._prepared = True
 
     def run(self):
         if not self._prepared:

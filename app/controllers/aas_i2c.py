@@ -100,6 +100,7 @@ class AasI2C:
             self.scroll.font = self.write_text["font"]
             self.scroll.y_pos = self.write_text["pos_y"]
             self.scroll.allow = True
+            self.scroll.prepare()
             self.clear_display_buffer()
 
         if self._send:
