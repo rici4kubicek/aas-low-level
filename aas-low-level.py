@@ -94,10 +94,13 @@ def on_display(moqs, obj, msg):
             else:
                 obj.i2c.display_command = None
 
-        if 'text' in data.keys() and 'font' in data.keys() and 'pos_x' in data.keys() and 'pos_y' in data.keys():
+        if 'text' in data.keys():
             obj.i2c.write_text["text"] = data["text"]
+        if 'font' in data.keys():
             obj.i2c.write_text["font"] = data["font"]
+        if 'pos_x' in data.keys():
             obj.i2c.write_text["pos_x"] = data["pos_x"]
+        if 'pos_y' in data.keys():
             obj.i2c.write_text["pos_y"] = data["pos_y"]
     except json.JSONDecodeError:
         obj.logger_error("MQTT: received msq is not json with expected information")
