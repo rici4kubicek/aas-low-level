@@ -7,7 +7,7 @@ from app.controllers.aas_i2c import *
 from app.controllers.aas_spi import *
 
 __author__ = "Richard Kubicek"
-__copyright__ = "Copyright 2019, FEEC BUT Brno"
+__copyright__ = "Copyright 2019-20, FEEC BUT Brno"
 __credits__ = ["Richard Kubicek"]
 __license__ = "Proprietary"
 __version__ = "2.0.0"
